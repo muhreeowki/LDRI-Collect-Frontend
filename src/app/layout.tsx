@@ -6,6 +6,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 import { Header } from '@/components/homepage/header';
+import { Toaster } from 'sonner';
 
 const font = Poppins({
   subsets: ['latin'],
@@ -20,10 +21,8 @@ export default function Layout({ children }: { children: ReactNode }) {
     >
       <head></head>
       <body className="selection:bg-zinc-800 selection:text-zinc-100 relative">
-        <RootProvider>
-          <Header />
-          {children}
-        </RootProvider>
+        <RootProvider>{children}</RootProvider>
+        <Toaster />
       </body>
     </html>
   );
