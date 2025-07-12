@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useActionState, useState } from 'react';
 import { toast } from 'sonner';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { object, z } from 'zod';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,17 +31,20 @@ import {
   FileUploaderContent,
   FileUploaderItem,
 } from '@/components/ui/file-upload';
+import { submitOnboardingFormSubmission } from '@/actions/form-submissions';
+import { File } from 'buffer';
 
-const formSchema = z.object({
+export const onboardingFormSchema = z.object({
   name: z.string().min(1).min(3),
   sex: z.string(),
   email: z.string(),
   phone: z.string(),
+  password: z.string(),
   nationalId: z.string().min(1).min(1),
   county: z.string(),
   position: z.string().min(1).min(2),
   department: z.string().min(1),
-  authorizationFile: z.instanceof(File, { message: 'File is required' }),
+  // authorizationFile: z.instanceof(File, { message: 'File is required' }),
 });
 
 export default function MyForm() {
@@ -50,13 +53,12 @@ export default function MyForm() {
     maxSize: 1024 * 1024 * 4,
     multiple: false,
   };
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof onboardingFormSchema>>({
+    resolver: zodResolver(onboardingFormSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof onboardingFormSchema>) {
     try {
-      console.log(values);
       toast(
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -71,9 +73,27 @@ export default function MyForm() {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        action={submitOnboardingFormSubmission}
         className="space-y-8 max-w-3xl mx-auto py-10"
       >
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem className="hidden">
+              <FormLabel></FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your name."
+                  type="text"
+                  {...field}
+                  value={'password lol'}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="name"
@@ -95,7 +115,11 @@ export default function MyForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Sex</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                {...field}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select your gender." />
@@ -189,6 +213,7 @@ export default function MyForm() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    {...field}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -196,14 +221,12 @@ export default function MyForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@google.com">Embu</SelectItem>
-                      <SelectItem value="m@google.com">Homa Bay</SelectItem>
-                      <SelectItem value="m@google.com">Machakos</SelectItem>
-                      <SelectItem value="m@google.com">
-                        Murang&apos;a
-                      </SelectItem>
-                      <SelectItem value="m@example.com">Nairobi</SelectItem>
-                      <SelectItem value="m@support.com">
+                      <SelectItem value="embu">Embu</SelectItem>
+                      <SelectItem value="homabay">Homa Bay</SelectItem>
+                      <SelectItem value="machakos">Machakos</SelectItem>
+                      <SelectItem value="muranga">Murang&apos;a</SelectItem>
+                      <SelectItem value="nairobi">Nairobi</SelectItem>
+                      <SelectItem value="tharakanithi">
                         Tharaka Nithi
                       </SelectItem>
                     </SelectContent>
@@ -261,51 +284,52 @@ export default function MyForm() {
           </div>
         </div>
 
-        <Controller
-          control={form.control}
-          name="authorizationFile"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Upload Official Authorization</FormLabel>
-              <FormControl>
-                <FileUploader
-                  value={field.value ? [field.value] : []}
-                  onValueChange={(files) =>
-                    field.onChange(files != null && files[0] ? files[0] : null)
-                  }
-                  dropzoneOptions={dropZoneConfig}
-                  className="relative bg-background rounded-lg p-2"
-                >
-                  <FileInput
-                    id="fileInput"
-                    className="outline-dashed outline-1 outline-slate-500"
-                  >
-                    <div className="flex items-center justify-center flex-col p-8 w-full ">
-                      <CloudUpload className="text-gray-500 w-10 h-10" />
-                      <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="font-semibold">Click to upload</span>
-                        &nbsp; or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        SVG, PNG, JPG or GIF
-                      </p>
-                    </div>
-                  </FileInput>
-                  <FileUploaderContent>
-                    {field.value && (
-                      <FileUploaderItem index={0}>
-                        <Paperclip className="h-4 w-4 stroke-current" />
-                        <span>{field.value.name}</span>
-                      </FileUploaderItem>
-                    )}
-                  </FileUploaderContent>
-                </FileUploader>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* <Controller */}
+        {/*   control={form.control} */}
+        {/*   name="authorizationFile" */}
+        {/*   render={({ field, fieldState }) => ( */}
+        {/*     <FormItem> */}
+        {/*       <FormLabel>Upload Official Authorization</FormLabel> */}
+        {/*       <FormControl> */}
+        {/*         <FileUploader */}
+        {/*           {...field} */}
+        {/*           value={field.value ? [field.value] : []} */}
+        {/*           onValueChange={(files) => */}
+        {/*             field.onChange(files != null && files[0] ? files[0] : null) */}
+        {/*           } */}
+        {/*           dropzoneOptions={dropZoneConfig} */}
+        {/*           className="relative bg-background rounded-lg p-2" */}
+        {/*         > */}
+        {/*           <FileInput */}
+        {/*             id="fileInput" */}
+        {/*             className="outline-dashed outline-1 outline-slate-500" */}
+        {/*           > */}
+        {/*             <div className="flex items-center justify-center flex-col p-8 w-full "> */}
+        {/*               <CloudUpload className="text-gray-500 w-10 h-10" /> */}
+        {/*               <p className="mb-1 text-sm text-gray-500 dark:text-gray-400"> */}
+        {/*                 <span className="font-semibold">Click to upload</span> */}
+        {/*                 &nbsp; or drag and drop */}
+        {/*               </p> */}
+        {/*               <p className="text-xs text-gray-500 dark:text-gray-400"> */}
+        {/*                 SVG, PNG, JPG or GIF */}
+        {/*               </p> */}
+        {/*             </div> */}
+        {/*           </FileInput> */}
+        {/*           <FileUploaderContent> */}
+        {/*             {field.value && ( */}
+        {/*               <FileUploaderItem index={0}> */}
+        {/*                 <Paperclip className="h-4 w-4 stroke-current" /> */}
+        {/*                 <span>{field.value.name}</span> */}
+        {/*               </FileUploaderItem> */}
+        {/*             )} */}
+        {/*           </FileUploaderContent> */}
+        {/*         </FileUploader> */}
+        {/*       </FormControl> */}
+        {/**/}
+        {/*       <FormMessage /> */}
+        {/*     </FormItem> */}
+        {/*   )} */}
+        {/* /> */}
         <Button type="submit">Submit</Button>
       </form>
     </Form>
