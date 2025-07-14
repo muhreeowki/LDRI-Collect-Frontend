@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 
 import { loginFormSchema } from '@/lib/validation-schemas';
+import { login } from '@/actions/auth';
 
 const formSchema = loginFormSchema;
 
@@ -64,7 +65,7 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form action={login} className="space-y-8">
               <div className="grid gap-4">
                 <FormField
                   control={form.control}

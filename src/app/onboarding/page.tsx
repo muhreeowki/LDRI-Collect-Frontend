@@ -31,7 +31,7 @@ import {
   FileUploaderContent,
   FileUploaderItem,
 } from '@/components/ui/file-upload';
-import { submitOnboardingForm } from '@/actions/form-submissions';
+import { onboard } from '@/actions/auth';
 import { File } from 'buffer';
 
 export const onboardingFormSchema = z.object({
@@ -72,10 +72,7 @@ export default function MyForm() {
 
   return (
     <Form {...form}>
-      <form
-        action={submitOnboardingForm}
-        className="space-y-8 max-w-3xl mx-auto py-10"
-      >
+      <form action={onboard} className="space-y-8 max-w-3xl mx-auto py-10">
         <FormField
           control={form.control}
           name="password"
