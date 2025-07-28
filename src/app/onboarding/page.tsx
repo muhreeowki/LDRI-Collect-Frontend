@@ -32,7 +32,7 @@ import {
   FileUploaderItem,
 } from '@/components/ui/file-upload';
 import { onboard } from '@/actions/auth';
-import { File } from 'buffer';
+// import {File} from 'buffer';
 
 export const onboardingFormSchema = z.object({
   name: z.string().min(1).min(3),
@@ -44,7 +44,7 @@ export const onboardingFormSchema = z.object({
   county: z.string(),
   position: z.string().min(1).min(2),
   department: z.string().min(1),
-  // authorizationFile: z.instanceof(File, { message: 'File is required' }),
+  // authorizationFile: z.instanceof(buffer.File, { message: 'File is required' }),
 });
 
 export default function MyForm() {
@@ -73,6 +73,7 @@ export default function MyForm() {
   return (
     <Form {...form}>
       <form action={onboard} className="space-y-8 max-w-3xl mx-auto py-10">
+        <h1 className="text-2xl font-bold text-center mb-6"> Create Account</h1>
         <FormField
           control={form.control}
           name="password"
@@ -167,7 +168,7 @@ export default function MyForm() {
                     <PhoneInput
                       placeholder="Enter your phone number."
                       {...field}
-                      defaultCountry="TR"
+                      defaultCountry="KE"
                     />
                   </FormControl>
 
@@ -280,7 +281,7 @@ export default function MyForm() {
             />
           </div>
         </div>
-
+        {/**/}
         {/* <Controller */}
         {/*   control={form.control} */}
         {/*   name="authorizationFile" */}
@@ -290,7 +291,6 @@ export default function MyForm() {
         {/*       <FormControl> */}
         {/*         <FileUploader */}
         {/*           {...field} */}
-        {/*           value={field.value ? [field.value] : []} */}
         {/*           onValueChange={(files) => */}
         {/*             field.onChange(files != null && files[0] ? files[0] : null) */}
         {/*           } */}
@@ -327,7 +327,9 @@ export default function MyForm() {
         {/*     </FormItem> */}
         {/*   )} */}
         {/* /> */}
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="float-end">
+          Submit
+        </Button>
       </form>
     </Form>
   );

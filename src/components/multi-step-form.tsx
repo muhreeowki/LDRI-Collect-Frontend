@@ -39,13 +39,20 @@ const stepTitles = [
 
 export default function MultiStepForm() {
   const [step, setStep] = useState<number>(1);
-  const [formData, setFormData] =
-    useState<Partial<MultiStepFormData>>(initialData);
+  const [formData, setFormData] = useState<Partial<MultiStepFormData>>(() => {
+    const savedData = localStorage.getItem('formData');
+    return savedData ? JSON.parse(savedData) : initialData;
+  });
 
   const totalSteps = stepTitles.length;
   const progress = (step / totalSteps) * 100;
 
   const handleNext = (stepKey: keyof MultiStepFormData, data: any) => {
+    // store the data in local storage
+    localStorage.setItem(
+      'formData',
+      JSON.stringify({ ...formData, [stepKey]: data })
+    );
     setFormData((prev) => ({ ...prev, [stepKey]: data }));
     setStep((prev) => prev + 1);
   };
@@ -66,6 +73,7 @@ export default function MultiStepForm() {
 
     if (result.success) {
       setStep(6);
+      localStorage.removeItem('formData');
     } else {
       alert('Submission failed: ' + result.error);
     }
