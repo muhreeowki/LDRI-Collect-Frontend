@@ -1,4 +1,5 @@
 'use client';
+
 import { useActionState, useState } from 'react';
 import { toast } from 'sonner';
 import { useForm, Controller } from 'react-hook-form';
@@ -57,13 +58,15 @@ export default function MyForm() {
     resolver: zodResolver(onboardingFormSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof onboardingFormSchema>) {
+  async function onSubmit(form: FormData) {
     try {
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      const response = await onboard(form);
+      if (response.success === false) {
+        toast.error(response.error || 'Failed to onboard. Please try again.');
+        return;
+      } else {
+        window.location.href = '/onboarding/success';
+      }
     } catch (error) {
       console.error('Form submission error', error);
       toast.error('Failed to submit the form. Please try again.');
@@ -72,7 +75,7 @@ export default function MyForm() {
 
   return (
     <Form {...form}>
-      <form action={onboard} className="space-y-8 max-w-3xl mx-auto py-10">
+      <form action={onSubmit} className="space-y-8 max-w-3xl mx-auto py-10">
         <h1 className="text-2xl font-bold text-center mb-6"> Create Account</h1>
         <FormField
           control={form.control}
