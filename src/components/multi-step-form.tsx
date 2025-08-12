@@ -11,6 +11,7 @@ import Step4Infrastructure, { Step4Data } from '@/components/form-steps/step4';
 import Step5Stakeholders, { Step5Data } from '@/components/form-steps/step5';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface MultiStepFormData {
   step1: Step1Data;
@@ -68,12 +69,15 @@ export default function MultiStepForm() {
       ...formData.step3,
       ...formData.step4,
       ...formData.step5,
+      completed: true,
     };
     const result = await submitBridgeForm(data);
 
     if (result.success) {
       setStep(6);
       localStorage.removeItem('formData');
+      toast.success('Form submitted successfully!');
+      window.location.href = '/';
     } else {
       alert('Submission failed: ' + result.error);
     }

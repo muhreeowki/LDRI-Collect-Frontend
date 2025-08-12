@@ -14,11 +14,7 @@ const font = Poppins({
 });
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`scroll-smooth antialiased ${font.className}`}
-      style={{ colorScheme: 'dark' }}
-    >
+    <html lang="en" className={`scroll-smooth antialiased ${font.className}`}>
       <head></head>
       <body className="selection:bg-zinc-800 selection:text-zinc-100 relative">
         <RootProvider>{children}</RootProvider>

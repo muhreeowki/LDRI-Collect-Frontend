@@ -39,18 +39,13 @@ export function LoginForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      // Assuming an async login function
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
-    } catch (error) {
-      console.error('Form submission error', error);
-      toast.error('Failed to submit the form. Please try again.');
+  async function onSubmit(form: FormData) {
+    const response = await login(form);
+    if (!response.success) {
+      toast.error('Login failed.', {
+        description: response.error || 'Unknown error',
+      });
+      return;
     }
   }
 
@@ -65,7 +60,7 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form action={login} className="space-y-8">
+            <form action={onSubmit} className="space-y-8">
               <div className="grid gap-4">
                 <FormField
                   control={form.control}

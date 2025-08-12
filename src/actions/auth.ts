@@ -25,7 +25,7 @@ export async function onboard(form: FormData) {
     },
   });
   if (response.status !== 201) {
-    return { success: false, error: 'Invalid credentials' };
+    return { success: false, error: 'Failed to onboard. Please try again.' };
   }
   return { success: true, message: 'Onboarded successfully!' };
 }

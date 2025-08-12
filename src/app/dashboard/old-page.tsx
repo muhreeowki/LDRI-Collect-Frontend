@@ -1,11 +1,24 @@
-'use client';
-import React from 'react';
+import { AppSidebar } from '@/components/app-sidebar';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Separator } from '@/components/ui/separator';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -14,24 +27,9 @@ import {
   Bar,
   XAxis,
   YAxis,
-  Tooltip,
   ResponsiveContainer,
+  Tooltip,
 } from 'recharts';
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Separator } from '@/components/ui/separator';
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/app-sidebar';
 
 export default function DataPage() {
   const submissions = [
@@ -78,11 +76,6 @@ export default function DataPage() {
     },
   ];
 
-  // Example: totalDelegates should be set to the expected number of submissions
-  const totalDelegates = 2; // Change this to your actual delegate count
-
-  const allCompleted = submissions.length - 1 === totalDelegates;
-
   // Compute average section scores
   const aggregate = (() => {
     const totalForms = submissions.length;
@@ -104,76 +97,6 @@ export default function DataPage() {
       sections: sectionTotals,
     };
   })();
-
-  if (!allCompleted) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="max-w-xl rounded p-8 shadow">
-          <div className="mb-6 text-center w-full">
-            <h2 className="text-2xl font-bold mb-2 text-muted-foreground">
-              Dashboard Locked
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              The dashboard is currently unavailable because not all delegates
-              have completed their submissions. Please wait until all delegates
-              have submitted their forms to view the dashboard.
-            </p>
-          </div>
-          <table className="w-full table-auto border text-sm rounded">
-            <thead>
-              <tr>
-                <th className="border px-3 py-2 text-left">Delegate</th>
-                <th className="border px-3 py-2 text-left">Department</th>
-                <th className="border px-3 py-2 text-left">Status</th>
-                <th className="border px-3 py-2 text-left">Submission</th>
-              </tr>
-            </thead>
-            <tbody className="w-full">
-              {Array.from({ length: totalDelegates }).map((_, idx) => {
-                const sub = submissions[idx];
-                return (
-                  <tr key={idx} className="hover:bg-accent">
-                    <td className="border px-3 py-2">
-                      {sub?.name || `Delegate ${idx + 1}`}
-                    </td>
-                    <td className="border px-3 py-2">
-                      {sub?.department || '-'}
-                    </td>
-                    <td className="border px-3 py-2 font-semibold">
-                      {sub ? (
-                        <span className="text-green-600">Completed</span>
-                      ) : (
-                        <span className="text-yellow-600">Pending</span>
-                      )}
-                    </td>
-                    <td className="border px-3 py-2">
-                      {sub ? (
-                        <a
-                          href={`/submissions/${sub.id}`}
-                          className="text-blue-600 underline"
-                        >
-                          View Submission
-                        </a>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <div className="mb-4">
-            <p className="font-medium text-muted-foreground mt-4">
-              {submissions.length} / {totalDelegates} delegates have completed
-              the form.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <SidebarProvider>
       <AppSidebar />

@@ -16,12 +16,17 @@ export default function Index() {
           Opt in to get started.
         </p>
       </div>
-      <div className="flex flex-col items-center space-y-4">
-        <a href="/onboarding" className="w-full">
-          <Button variant="default" className="w-full">
+      <div className="flex flex-row items-center justify-center w-full gap-5">
+        <form action="/onboarding">
+          <Button type="submit" variant="default">
             Opt In
           </Button>
-        </a>
+        </form>
+        <form action="/login">
+          <Button type="submit" variant="outline">
+            Login
+          </Button>
+        </form>
       </div>
     </div>
   );

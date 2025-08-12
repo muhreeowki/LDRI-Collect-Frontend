@@ -42,3 +42,35 @@ export async function createDelegates(formData: FormData) {
     return { success: false, error: 'An unexpected error occurred' };
   }
 }
+
+export async function verifyDelegate(formData: FormData) {
+  const cookieStore = await cookies();
+
+  const data = { formSubmissionCode: formData.get('formSubmissionCode') };
+
+  const response = await fetch(`${process.env.API_URL}/delegates/verify`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    console.error('Error verifying delegate:', json);
+    return {
+      success: false,
+      error: json.message || 'Failed to verify delegates',
+    };
+  }
+
+  console.log('Delegate verification response:', json);
+  if (json.formSubmissionCode != undefined) {
+    cookieStore.set('delegate', JSON.stringify(json), {
+      expires: new Date(Date.now() + 60 * 60 * 10000000),
+    });
+  } // Set the access token cookie with a long expiration time
+  return { success: true, message: 'Delegate verified successfully!' };
+}
