@@ -5,8 +5,8 @@ import type { ReactNode } from 'react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
-import { Header } from '@/components/homepage/header';
 import { Toaster } from 'sonner';
+import QueryProvider from '@/components/providers/query-provider';
 
 const font = Poppins({
   subsets: ['latin'],
@@ -17,7 +17,9 @@ export default function Layout({ children }: { children: ReactNode }) {
     <html lang="en" className={`scroll-smooth antialiased ${font.className}`}>
       <head></head>
       <body className="selection:bg-zinc-800 selection:text-zinc-100 relative">
-        <RootProvider>{children}</RootProvider>
+        <QueryProvider>
+          <RootProvider>{children}</RootProvider>
+        </QueryProvider>
         <Toaster />
       </body>
     </html>

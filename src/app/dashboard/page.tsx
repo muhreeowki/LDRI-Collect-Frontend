@@ -1,326 +1,87 @@
-'use client';
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Separator } from '@/components/ui/separator';
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/app-sidebar';
+import UserDashboard from '@/components/user-dashboard';
+import { getUserForms } from '@/actions/form-submissions';
+import { getUserDashboard } from '@/actions/users';
 
-export default function DataPage() {
-  const submissions = [
-    {
-      id: 'form1',
-      name: 'Jane Doe',
-      department: 'Health',
-      totalScore: 38,
-      maxScore: 50,
-      formData: {
-        Q_1_1: 'a.1.1.i',
-        Q_1_2: 'a.1.2.3.i',
-        Q_2_1: '1',
-        Q_2_2: 'a.2.2.a',
-        // ... more fields
-      },
-      sections: [
-        { name: 'Governance', score: 7 },
-        { name: 'Finance', score: 6 },
-        { name: 'Technical Capacity', score: 9 },
-        { name: 'Data Infrastructure', score: 8 },
-        { name: 'Stakeholder Engagement', score: 8 },
-      ],
-    },
-    {
-      id: 'form2',
-      name: 'John Smith',
-      department: 'Education',
-      totalScore: 42,
-      maxScore: 50,
-      formData: {
-        Q_1_1: 'a.1.1.f',
-        Q_1_2: 'a.1.2.1.f',
-        Q_2_1: '1',
-        Q_2_2: 'a.2.2.i_1',
-      },
-      sections: [
-        { name: 'Governance', score: 9 },
-        { name: 'Finance', score: 8 },
-        { name: 'Technical Capacity', score: 8 },
-        { name: 'Data Infrastructure', score: 8 },
-        { name: 'Stakeholder Engagement', score: 9 },
-      ],
-    },
-  ];
+export default async function UserDashboardPage() {
+  const [formsRes, summaryRes] = await Promise.all([
+    getUserForms(),
+    getUserDashboard(),
+  ]);
 
-  // Example: totalDelegates should be set to the expected number of submissions
-  const totalDelegates = 2; // Change this to your actual delegate count
+  const forms = formsRes.success ? formsRes.forms : [];
+  const summary = summaryRes.success ? summaryRes.summary : null;
 
-  const allCompleted = submissions.length - 1 === totalDelegates;
+  // Compute lock and aggregate server-side for better UX
+  const expectedDelegates = Number(summary?._count?.Delegates ?? 0);
+  const completedForms = Number(summary?._count?.FormSubmissions ?? 0);
+  const isLocked = expectedDelegates > 0 && completedForms < expectedDelegates;
 
-  // Compute average section scores
-  const aggregate = (() => {
-    const totalForms = submissions.length;
-    const totalScore = submissions.reduce((acc, s) => acc + s.totalScore, 0);
-    const maxScore = submissions.reduce((acc, s) => acc + s.maxScore, 0);
-    const sectionNames = submissions[0]?.sections.map((s) => s.name) || [];
+  // Placeholder aggregate from forms if your backend later includes scoring
+  //const aggregate = null as any;
 
-    const sectionTotals = sectionNames.map((name) => {
-      const total = submissions.reduce((acc, s) => {
-        const section = s.sections.find((sec) => sec.name === name);
-        return acc + (section?.score || 0);
-      }, 0);
-      return { name, score: parseFloat((total / totalForms).toFixed(2)) };
-    });
+  const aggregate = forms
+    ? (() => {
+        const totalForms = forms.length;
+        const totalScore = forms.reduce(
+          (acc: any, s: any) => acc + s.totalScore,
+          0
+        );
+        const maxScore = forms.reduce(
+          (acc: any, s: any) => acc + s.maxScore,
+          0
+        );
+        const sectionNames = [
+          'Governance',
+          'Finance',
+          'Technical Capacity',
+          'Data Infrastructure',
+          'Stakeholder Engagement',
+        ];
 
-    return {
-      averageScore: parseFloat((totalScore / totalForms).toFixed(2)),
-      totalMax: maxScore,
-      sections: sectionTotals,
-    };
-  })();
+        const section1Scores = forms.reduce((acc: any, s: any) => {
+          return acc + (s.section1Score || 0);
+        }, 0);
+        const section2Scores = forms.reduce((acc: any, s: any) => {
+          return acc + (s.section2Score || 0);
+        }, 0);
+        const section3Scores = forms.reduce((acc: any, s: any) => {
+          return acc + (s.section3Score || 0);
+        }, 0);
+        const section4Scores = forms.reduce((acc: any, s: any) => {
+          return acc + (s.section4Score || 0);
+        }, 0);
+        const section5Scores = forms.reduce((acc: any, s: any) => {
+          return acc + (s.section5Score || 0);
+        }, 0);
 
-  if (!allCompleted) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="max-w-xl rounded p-8 shadow">
-          <div className="mb-6 text-center w-full">
-            <h2 className="text-2xl font-bold mb-2 text-muted-foreground">
-              Dashboard Locked
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              The dashboard is currently unavailable because not all delegates
-              have completed their submissions. Please wait until all delegates
-              have submitted their forms to view the dashboard.
-            </p>
-          </div>
-          <table className="w-full table-auto border text-sm rounded">
-            <thead>
-              <tr>
-                <th className="border px-3 py-2 text-left">Delegate</th>
-                <th className="border px-3 py-2 text-left">Department</th>
-                <th className="border px-3 py-2 text-left">Status</th>
-                <th className="border px-3 py-2 text-left">Submission</th>
-              </tr>
-            </thead>
-            <tbody className="w-full">
-              {Array.from({ length: totalDelegates }).map((_, idx) => {
-                const sub = submissions[idx];
-                return (
-                  <tr key={idx} className="hover:bg-accent">
-                    <td className="border px-3 py-2">
-                      {sub?.name || `Delegate ${idx + 1}`}
-                    </td>
-                    <td className="border px-3 py-2">
-                      {sub?.department || '-'}
-                    </td>
-                    <td className="border px-3 py-2 font-semibold">
-                      {sub ? (
-                        <span className="text-green-600">Completed</span>
-                      ) : (
-                        <span className="text-yellow-600">Pending</span>
-                      )}
-                    </td>
-                    <td className="border px-3 py-2">
-                      {sub ? (
-                        <a
-                          href={`/submissions/${sub.id}`}
-                          className="text-blue-600 underline"
-                        >
-                          View Submission
-                        </a>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <div className="mb-4">
-            <p className="font-medium text-muted-foreground mt-4">
-              {submissions.length} / {totalDelegates} delegates have completed
-              the form.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+        const sectionScores = [
+          section1Scores,
+          section2Scores,
+          section3Scores,
+          section4Scores,
+          section5Scores,
+        ];
+
+        const sectionTotals = sectionNames.map((name: any, idx: number) => {
+          return { name, score: sectionScores[idx] };
+        });
+
+        return {
+          averageScore: parseFloat((totalScore / totalForms).toFixed(2)),
+          totalMax: maxScore,
+          sections: sectionTotals,
+        };
+      })()
+    : (null as any);
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="p-6">
-            {/* Department Scores */}
-            <Tabs defaultValue={'total'}>
-              <TabsList className="justify-start">
-                <TabsTrigger value={'total'}>Total Score</TabsTrigger>
-                {submissions.map((sub) => (
-                  <TabsTrigger key={sub.id} value={sub.id}>
-                    {sub.department}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              <TabsContent value="total">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Total Score</CardTitle>
-                    <CardDescription>
-                      This is the average score across all departments.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-xl font-bold">
-                      {aggregate.averageScore} /{' '}
-                      {aggregate.totalMax / submissions.length}
-                    </p>
-                    <Progress
-                      value={
-                        (aggregate.averageScore /
-                          (aggregate.totalMax / submissions.length)) *
-                        100
-                      }
-                    />
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={aggregate.sections}>
-                        <XAxis dataKey="name" />
-                        <YAxis domain={[0, 10]} />
-                        <Tooltip />
-                        <Bar
-                          dataKey="score"
-                          fill="#16a34a"
-                          radius={[4, 4, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              {submissions.map((sub) => (
-                <TabsContent key={sub.id} value={sub.id}>
-                  <Card key={sub.id}>
-                    <CardHeader>
-                      <CardTitle>
-                        {sub.department} - {sub.name}
-                      </CardTitle>
-                      <CardDescription>
-                        This is the score for the {sub.department} department.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-xl font-bold">
-                        {sub.totalScore} / {sub.maxScore}
-                      </p>
-                      <Progress value={(sub.totalScore / sub.maxScore) * 100} />
-                      <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={sub.sections}>
-                          <XAxis dataKey="name" />
-                          <YAxis domain={[0, 10]} />
-                          <Tooltip />
-                          <Bar
-                            dataKey="score"
-                            fill="#3b82f6"
-                            radius={[4, 4, 0, 0]}
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              ))}
-            </Tabs>
-            {/* Submissions Tab */}
-          </div>
-          <div className="p-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Scores Table by Department and Section</CardTitle>
-              </CardHeader>
-              <CardContent className="overflow-auto">
-                <table className="w-full table-auto border text-sm">
-                  <thead className="bg-muted">
-                    <tr>
-                      <th className="border px-3 py-2 text-left">Department</th>
-                      {submissions[0].sections.map((section) => (
-                        <th
-                          key={section.name}
-                          className="border px-3 py-2 text-left"
-                        >
-                          {section.name}
-                        </th>
-                      ))}
-                      <th className="border px-3 py-2 text-left">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {submissions.map((sub) => (
-                      <tr key={sub.id} className="hover:bg-accent">
-                        <td className="border px-3 py-2">{sub.department}</td>
-                        {sub.sections.map((section) => (
-                          <td key={section.name} className="border px-3 py-2">
-                            {section.score}
-                          </td>
-                        ))}
-                        <td className="border px-3 py-2 font-semibold">
-                          {sub.totalScore}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <UserDashboard
+      submissions={forms}
+      isLocked={isLocked}
+      expectedDelegates={expectedDelegates}
+      delegates={summary?.delegates ?? []}
+      aggregate={aggregate}
+    />
   );
 }

@@ -89,7 +89,7 @@ const BridgeFormPage = () => {
     );
   }
 
-  return <MultiStepForm />;
+  return <MultiStepForm formSubmissionCode={form.getValues('formSubmissionCode')} />;
 };
 
 export default BridgeFormPage;

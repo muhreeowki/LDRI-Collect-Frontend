@@ -36,16 +36,15 @@ import { onboard } from '@/actions/auth';
 // import {File} from 'buffer';
 
 export const onboardingFormSchema = z.object({
-  name: z.string().min(1).min(3),
-  sex: z.string(),
-  email: z.string(),
-  phone: z.string(),
-  password: z.string(),
-  nationalId: z.string().min(1).min(1),
-  county: z.string(),
-  position: z.string().min(1).min(2),
-  department: z.string().min(1),
-  // authorizationFile: z.instanceof(buffer.File, { message: 'File is required' }),
+  name: z.string().min(3, 'Name must be at least 3 characters'),
+  sex: z.string().min(1, 'Sex is required'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().min(10, 'Phone is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  nationalId: z.string().min(1, 'National ID is required'),
+  county: z.string().min(1, 'County is required'),
+  position: z.string().min(2, 'Position is required'),
+  department: z.string().min(1, 'Department is required'),
 });
 
 export default function MyForm() {
@@ -65,6 +64,8 @@ export default function MyForm() {
         toast.error(response.error || 'Failed to onboard. Please try again.');
         return;
       } else {
+        // Gate success page via cookie; middleware checks `ldriSuccess`
+        document.cookie = 'ldriSuccess=true; path=/; max-age=' + 60 * 10;
         window.location.href = '/onboarding/success';
       }
     } catch (error) {
@@ -85,12 +86,12 @@ export default function MyForm() {
               <FormLabel></FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter your name."
-                  type="text"
+                  placeholder="Password"
+                  type="password"
                   {...field}
-                  value={'password lol'}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

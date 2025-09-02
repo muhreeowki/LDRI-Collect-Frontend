@@ -48,10 +48,19 @@ export async function login(form: FormData) {
     return { success: false, error: 'Invalid credentials' };
   }
   const json = await response.json();
-  cookieStore.set('accessToken', json.accessToken);
-  cookieStore.set('isAdmin', json.isAdmin ? 'true' : 'false');
+  // Secure cookies
+  cookieStore.set('accessToken', json.accessToken, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+  });
+  cookieStore.set('isAdmin', json.isAdmin ? 'true' : 'false', {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+  });
 
-  if (json.isAdmin == true) {
+  if (json.isAdmin === true) {
     redirect('/admin');
   } else {
     redirect('/dashboard');

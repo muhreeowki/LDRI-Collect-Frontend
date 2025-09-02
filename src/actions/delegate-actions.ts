@@ -7,11 +7,11 @@ import { cookies } from 'next/headers';
 export async function createDelegates(formData: FormData) {
   try {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken');
+    const accessToken = cookieStore.get('accessToken')?.value;
     if (accessToken === undefined) {
       return { success: false, error: 'No User Signed In' };
     }
-    console.log('Access Token:', accessToken.value);
+    console.log('Access Token:', accessToken);
     // Extract the delegates data from FormData
     const rawData = formData.get('delegates');
     if (!rawData) {
@@ -69,6 +69,9 @@ export async function verifyDelegate(formData: FormData) {
   console.log('Delegate verification response:', json);
   if (json.formSubmissionCode != undefined) {
     cookieStore.set('delegate', JSON.stringify(json), {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
       expires: new Date(Date.now() + 60 * 60 * 10000000),
     });
   } // Set the access token cookie with a long expiration time

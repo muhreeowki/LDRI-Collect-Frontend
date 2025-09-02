@@ -9,7 +9,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye, Edit } from 'lucide-react';
-import { mockUsers } from '@/lib/prisma';
 import { getUsers, validateUser } from '@/actions/users';
 import {
   Dialog,
@@ -27,6 +26,13 @@ import { Label } from '@/components/ui/label';
 export async function UsersTable() {
   // Simulate async operation
   const res = await getUsers();
+  if ((res as any)?.success === false) {
+    return (
+      <div className="rounded-md border p-4 text-sm text-muted-foreground">
+        Failed to load users.
+      </div>
+    );
+  }
   const users = res;
 
   return (

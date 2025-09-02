@@ -10,6 +10,8 @@ export async function submitBridgeForm(data: any) {
     if (delegate === undefined) {
       return { success: false, error: 'No User Signed In' };
     }
+    console.log('data', data);
+
     const response = await fetch(
       `${process.env.API_URL}/forms/${delegate.formSubmissionCode}`,
       {
@@ -35,9 +37,10 @@ export async function submitBridgeForm(data: any) {
 export async function getForms() {
   try {
     const cookieStore = await cookies();
+    const isAdmin = cookieStore.get('isAdmin')?.value === 'true';
     const accessToken = cookieStore.get('accessToken')?.value;
-    if (accessToken === undefined) {
-      return { success: false, error: 'No User Signed In' };
+    if (accessToken === undefined || !isAdmin) {
+      return { success: false, error: 'Not Authorized' };
     }
     const response = await fetch(`${process.env.API_URL}/forms`, {
       method: 'GET',
@@ -56,6 +59,68 @@ export async function getForms() {
     console.log('Response:', jsonResp);
 
     return jsonResp;
+  } catch (err: any) {
+    console.error(err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function getUserForms() {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get('accessToken')?.value;
+
+    console.log('accessToken', accessToken);
+
+    if (accessToken === undefined) {
+      return { success: false, error: 'Not Authorized' };
+    }
+    const response = await fetch(`${process.env.API_URL}/users/forms`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const jsonResp = await response.json();
+    console.log(jsonResp);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch users');
+    }
+
+    return { success: true, forms: jsonResp };
+  } catch (err: any) {
+    console.error(err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function getFormById(id: string) {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get('accessToken')?.value;
+
+    if (accessToken === undefined) {
+      return { success: false, error: 'Not Authorized' };
+    }
+
+    const response = await fetch(`${process.env.API_URL}/forms/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const jsonResp = await response.json();
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch form');
+    }
+
+    return { success: true, form: jsonResp };
   } catch (err: any) {
     console.error(err);
     return { success: false, error: err.message };

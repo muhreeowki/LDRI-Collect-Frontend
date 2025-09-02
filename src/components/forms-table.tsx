@@ -9,12 +9,18 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye, Download } from 'lucide-react';
-import { mockForms } from '@/lib/prisma';
 import { getForms } from '@/actions/form-submissions';
 
 export async function FormsTable() {
   // Simulate async operation
   const forms = await getForms();
+  if ((forms as any)?.success === false) {
+    return (
+      <div className="rounded-md border p-4 text-sm text-muted-foreground">
+        Failed to load forms.
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-md border">

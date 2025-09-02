@@ -1,33 +1,35 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, FileText, UserCheck, Building } from "lucide-react"
-import { mockStats } from "@/lib/prisma"
+import { getAdminStats } from "@/actions/users"
 
 export async function StatsCards() {
-  // Simulate async operation
-  await new Promise((resolve) => setTimeout(resolve, 100))
+  const res = await getAdminStats()
+  const derived = res.success
+    ? res.stats
+    : { totalUsers: 0, validUsers: 0, totalDelegates: 0, totalForms: 0 }
 
   const stats = [
     {
       title: "Total Users",
-      value: mockStats.totalUsers,
+      value: derived?.totalUsers,
       icon: Users,
       description: "Registered users",
     },
     {
       title: "Valid Users",
-      value: mockStats.validUsers,
+      value: derived?.validUsers,
       icon: UserCheck,
       description: "Verified users",
     },
     {
       title: "Delegates",
-      value: mockStats.totalDelegates,
+      value: derived?.totalDelegates,
       icon: Building,
       description: "Active delegates",
     },
     {
       title: "Form Submissions",
-      value: mockStats.totalForms,
+      value: derived?.totalForms,
       icon: FileText,
       description: "Total submissions",
     },

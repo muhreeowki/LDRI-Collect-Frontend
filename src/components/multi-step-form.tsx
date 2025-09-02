@@ -38,17 +38,62 @@ const stepTitles = [
   'Review & Submit',
 ];
 
-export default function MultiStepForm() {
+export default function MultiStepForm({
+  formSubmissionCode,
+}: {
+  formSubmissionCode: string;
+}) {
   const [step, setStep] = useState<number>(1);
   const [formData, setFormData] = useState<Partial<MultiStepFormData>>(() => {
     const savedData = localStorage.getItem('formData');
     return savedData ? JSON.parse(savedData) : initialData;
   });
 
-  const totalSteps = stepTitles.length;
-  const progress = (step / totalSteps) * 100;
+  const [clientScores, setClientScores] = useState<{
+    sections: number[];
+    total: number;
+  }>(() => {
+    const saved = localStorage.getItem('clientScores');
+    return saved ? JSON.parse(saved) : { sections: [0, 0, 0, 0, 0], total: 0 };
+  });
+
+  const labelToPoints = (val?: string | null) => {
+    if (!val) return 0;
+    const lower = String(val).toLowerCase();
+    if (lower.includes('[advanced]') || lower.endsWith('.a')) return 4;
+    if (lower.includes('[intermediate]') || lower.endsWith('.i')) return 3;
+    if (lower.includes('[emerging]') || lower.endsWith('.e')) return 2;
+    if (lower.includes('[foundational]') || lower.endsWith('.f')) return 1;
+    return 0;
+  };
+
+  const computeSectionScore = (
+    sectionIdx: number,
+    data: Record<string, any>
+  ) => {
+    const points = Object.values(data).reduce(
+      (acc, v) => acc + labelToPoints(v as any),
+      0
+    );
+    const nextSections = [...clientScores.sections];
+    nextSections[sectionIdx] = points;
+    const total = nextSections.reduce((a, b) => a + b, 0);
+    const next = { sections: nextSections, total };
+    localStorage.setItem('clientScores', JSON.stringify(next));
+    setClientScores(next);
+  };
 
   const handleNext = (stepKey: keyof MultiStepFormData, data: any) => {
+    // compute and store section score first
+    const stepIndexMap: Record<keyof MultiStepFormData, number> = {
+      step1: 0,
+      step2: 1,
+      step3: 2,
+      step4: 3,
+      step5: 4,
+    };
+    computeSectionScore(stepIndexMap[stepKey], data as Record<string, any>);
+
     // store the data in local storage
     localStorage.setItem(
       'formData',
@@ -69,6 +114,12 @@ export default function MultiStepForm() {
       ...formData.step3,
       ...formData.step4,
       ...formData.step5,
+      totalScore: clientScores.total,
+      section1Score: clientScores.sections[0],
+      section2Score: clientScores.sections[1],
+      section3Score: clientScores.sections[2],
+      section4Score: clientScores.sections[3],
+      section5Score: clientScores.sections[4],
       completed: true,
     };
     const result = await submitBridgeForm(data);
@@ -76,12 +127,16 @@ export default function MultiStepForm() {
     if (result.success) {
       setStep(6);
       localStorage.removeItem('formData');
+      localStorage.removeItem('clientScores');
       toast.success('Form submitted successfully!');
       window.location.href = '/';
     } else {
       alert('Submission failed: ' + result.error);
     }
   };
+
+  const totalSteps = stepTitles.length;
+  const progress = (step / totalSteps) * 100;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
