@@ -1,6 +1,6 @@
 import React from 'react';
 import UserDashboard from '@/components/user-dashboard';
-import { getUserForms } from '@/actions/form-submissions';
+import { getUserForms } from '@/actions/forms';
 import { getUserDashboard } from '@/actions/users';
 
 export default async function UserDashboardPage() {

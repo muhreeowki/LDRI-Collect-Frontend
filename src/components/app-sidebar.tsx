@@ -17,7 +17,6 @@ import {
 
 // This is sample data.
 const data = {
-  versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
   navMain: [
     {
       title: 'Your Data',
@@ -29,7 +28,7 @@ const data = {
         },
         {
           title: 'Forms Submissions',
-          url: '/dashboard/forms',
+          url: '/dashboard/submissions',
         },
       ],
     },
@@ -40,11 +39,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        />
-        <SearchForm />
+        <h1 className="text-xl font-bold">Dashboard</h1>
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}

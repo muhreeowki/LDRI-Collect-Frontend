@@ -132,7 +132,7 @@ export default function UserDashboard({
                   <td className="border px-3 py-2">
                     {d.hasSubmitted && d.formId ? (
                       <a
-                        href={`/dashboard/forms/${d.formId}`}
+                        href={`/dashboard/submissions/${d.formId}`}
                         className="text-blue-600 underline"
                       >
                         View Submission
@@ -257,7 +257,7 @@ export default function UserDashboard({
                         />
                         <div>
                           <a
-                            href={`/dashboard/forms/${sub.id}`}
+                            href={`/dashboard/submissions/${sub.id}`}
                             className="text-blue-600 underline text-sm"
                           >
                             Open details
@@ -294,16 +294,14 @@ export default function UserDashboard({
                       <th className="border px-3 py-2 text-left">Department</th>
                       {(submissions &&
                         submissions.length > 0 &&
-                        submissions[0]?.sections?.map(
-                          (section: SectionScore) => (
-                            <th
-                              key={section.name}
-                              className="border px-3 py-2 text-left"
-                            >
-                              {section.name}
-                            </th>
-                          )
-                        )) ||
+                        aggregate.sections?.map((section: SectionScore) => (
+                          <th
+                            key={section.name}
+                            className="border px-3 py-2 text-left"
+                          >
+                            {section.name}
+                          </th>
+                        ))) ||
                         null}
                       <th className="border px-3 py-2 text-left">Total</th>
                     </tr>

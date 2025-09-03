@@ -63,10 +63,7 @@ const BridgeFormPage = () => {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                action={onSubmit}
-                className="w-full space-y-6 bg-card py-4 rounded-lg shadow-lg"
-              >
+              <form action={onSubmit} className="w-full space-y-6 py-4">
                 <FormField
                   control={form.control}
                   name="formSubmissionCode"
@@ -89,7 +86,9 @@ const BridgeFormPage = () => {
     );
   }
 
-  return <MultiStepForm formSubmissionCode={form.getValues('formSubmissionCode')} />;
+  return (
+    <MultiStepForm formSubmissionCode={form.getValues('formSubmissionCode')} />
+  );
 };
 
 export default BridgeFormPage;

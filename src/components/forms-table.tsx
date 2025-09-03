@@ -9,11 +9,11 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye, Download } from 'lucide-react';
-import { getForms } from '@/actions/form-submissions';
+import { getAllForms } from '@/actions/forms';
 
 export async function FormsTable() {
   // Simulate async operation
-  const forms = await getForms();
+  const forms = await getAllForms();
   if ((forms as any)?.success === false) {
     return (
       <div className="rounded-md border p-4 text-sm text-muted-foreground">

@@ -78,23 +78,6 @@ export default function MyForm() {
     <Form {...form}>
       <form action={onSubmit} className="space-y-8 max-w-3xl mx-auto py-10">
         <h1 className="text-2xl font-bold text-center mb-6"> Create Account</h1>
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem className="hidden">
-              <FormLabel></FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}
@@ -113,69 +96,81 @@ export default function MyForm() {
 
         <FormField
           control={form.control}
-          name="sex"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sex</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                {...field}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your gender." />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="intersex">Intersex</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your email address."
+                  type="email"
+                  {...field}
+                />
+              </FormControl>
 
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="grid grid-cols-12 gap-4">
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input placeholder="Password" type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-6 xl:grid-cols-12 space-y-8 xl:space-y-0 xl:gap-8">
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="email"
+              name="sex"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your email address."
-                      type="email"
-                      {...field}
-                    />
-                  </FormControl>
-
+                  <FormLabel>Sex</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    {...field}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your gender." />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="intersex">Intersex</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-
           <div className="col-span-6">
             <FormField
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="flex flex-col items-start">
+                <FormItem>
                   <FormLabel>Phone number</FormLabel>
-                  <FormControl className="w-full">
+                  <FormControl>
                     <PhoneInput
+                      className="w-full"
                       placeholder="Enter your phone number."
                       {...field}
                       defaultCountry="KE"
                     />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
@@ -183,7 +178,7 @@ export default function MyForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-4">
+        <div className="grid grid-cols-6 xl:grid-cols-12 space-y-8 xl:space-y-0 xl:gap-8">
           <div className="col-span-6">
             <FormField
               control={form.control}
@@ -240,7 +235,7 @@ export default function MyForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-4">
+        <div className="grid grid-cols-6 xl:grid-cols-12 space-y-8 xl:space-y-0 xl:gap-8">
           <div className="col-span-6">
             <FormField
               control={form.control}

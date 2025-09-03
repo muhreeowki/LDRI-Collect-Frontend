@@ -3,7 +3,7 @@
 'use client';
 
 import { useState } from 'react';
-import { submitBridgeForm } from '@/actions/form-submissions';
+import { submitBridgeForm } from '@/actions/forms';
 import Step1Governance, { Step1Data } from '@/components/form-steps/step1';
 import Step2Finance, { Step2Data } from '@/components/form-steps/step2';
 import Step3Technical, { Step3Data } from '@/components/form-steps/step3';

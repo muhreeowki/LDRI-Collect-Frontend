@@ -34,7 +34,7 @@ export async function submitBridgeForm(data: any) {
   }
 }
 
-export async function getForms() {
+export async function getAllForms() {
   try {
     const cookieStore = await cookies();
     const isAdmin = cookieStore.get('isAdmin')?.value === 'true';

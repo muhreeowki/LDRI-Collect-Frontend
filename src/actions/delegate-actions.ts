@@ -43,6 +43,64 @@ export async function createDelegates(formData: FormData) {
   }
 }
 
+export async function getDelegate(formSubmissionCode: string) {
+  try {
+    const response = await fetch(
+      `${process.env.API_URL}/delegates/${formSubmissionCode}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    const json = await response.json();
+    if (!response.ok) {
+      throw new Error(json.message || 'Failed to fetch delegate');
+    }
+    return { success: true, delegate: json };
+  } catch (error) {
+    console.error('Error fetching delegate:', error);
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: 'An unexpected error occurred' };
+  }
+}
+
+export async function getUsersDelegates() {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get('accessToken')?.value;
+    if (accessToken === undefined) {
+      return { success: false, error: 'No User Signed In' };
+    }
+    console.log('Access Token:', accessToken);
+
+    const response = await fetch(`${process.env.API_URL}/users/delegates`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      throw new Error(json.message || 'Failed to fetch delegates');
+    }
+
+    return { success: true, delegates: json };
+  } catch (error) {
+    console.error('Error fetching delegates:', error);
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: 'An unexpected error occurred' };
+  }
+}
+
 export async function verifyDelegate(formData: FormData) {
   const cookieStore = await cookies();
 
