@@ -18,11 +18,9 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import { verifyDelegate } from '@/actions/delegate-actions';
 import { toast } from 'sonner';
 

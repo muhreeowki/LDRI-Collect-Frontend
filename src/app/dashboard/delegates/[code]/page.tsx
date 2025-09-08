@@ -8,12 +8,10 @@ import {
   Mail,
   Phone,
   Building,
-  Users,
   Calendar,
   FileText,
   AlertCircle,
 } from 'lucide-react';
-import { AssessmentAnswers } from '@/components/form-answers';
 import { getDelegate } from '@/actions/delegate-actions';
 
 interface PageProps {

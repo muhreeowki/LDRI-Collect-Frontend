@@ -23,7 +23,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { PasswordInput } from '@/components/ui/password-input';
 
 import { loginFormSchema } from '@/lib/validation-schemas';
 import { login } from '@/actions/auth';
@@ -96,10 +95,10 @@ export function LoginForm() {
                         </Link>
                       </div>
                       <FormControl>
-                        <PasswordInput
+                        <Input
                           id="password"
+                          type="password"
                           placeholder="******"
-                          autoComplete="current-password"
                           {...field}
                         />
                       </FormControl>

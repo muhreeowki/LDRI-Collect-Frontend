@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Button } from './ui/button';
-import { FaChevronRight } from 'react-icons/fa';
 
 export const VariantsCard = ({
   id,
@@ -19,7 +18,7 @@ export const VariantsCard = ({
   >
     <div className="flex-row-between mb-4 gap-1 border-b border-dashed py-1">
       <h3 className="text-xl font-bold text-start">{title}</h3>
-      <Button asChild variant="ghost" size="sm" rightIcon={<FaChevronRight />}>
+      <Button asChild variant="ghost" size="sm">
         <Link href={docUrl} prefetch={false}>
           Get code
         </Link>

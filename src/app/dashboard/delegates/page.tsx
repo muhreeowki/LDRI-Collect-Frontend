@@ -2,11 +2,10 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, User, Mail, Phone, Building, Users } from 'lucide-react';
+import { ArrowLeft, User, Mail, Phone, Building } from 'lucide-react';
 import { getUsersDelegates } from '@/actions/delegate-actions';
 
 export default async function DelegatesPage() {
-  // Mock data matching the Delegate Prisma schema
   const resp = await getUsersDelegates();
   if (!resp.success) {
     return (
@@ -17,100 +16,11 @@ export default async function DelegatesPage() {
   }
   const delegates = resp.delegates;
 
-  const mockDelegates = [
-    {
-      formSubmissionCode: 'DEL001',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@county.gov',
-      phone: '+1 (555) 123-4567',
-      county: 'NAIROBI',
-      department: 'Health Services',
-      supervisor: { name: 'Dr. Michael Chen', id: 1 },
-      userId: 1,
-      form: {
-        totalScore: 87,
-        submissionDate: '2024-01-15',
-        status: 'COMPLETED',
-      },
-    },
-    {
-      formSubmissionCode: 'DEL002',
-      name: 'James Kimani',
-      email: 'james.kimani@county.gov',
-      phone: '+1 (555) 234-5678',
-      county: 'MOMBASA',
-      department: 'Education',
-      supervisor: { name: 'Prof. Mary Wanjiku', id: 2 },
-      userId: 2,
-      form: {
-        totalScore: 92,
-        submissionDate: '2024-01-14',
-        status: 'COMPLETED',
-      },
-    },
-    {
-      formSubmissionCode: 'DEL003',
-      name: 'Grace Achieng',
-      email: 'grace.achieng@county.gov',
-      phone: '+1 (555) 345-6789',
-      county: 'KISUMU',
-      department: 'Infrastructure',
-      supervisor: { name: 'Eng. Peter Mwangi', id: 3 },
-      userId: 3,
-      form: {
-        totalScore: 78,
-        submissionDate: '2024-01-13',
-        status: 'COMPLETED',
-      },
-    },
-    {
-      formSubmissionCode: 'DEL004',
-      name: 'David Mutua',
-      email: 'david.mutua@county.gov',
-      phone: '+1 (555) 456-7890',
-      county: 'NAKURU',
-      department: 'Finance',
-      supervisor: { name: 'CPA Jane Njeri', id: 4 },
-      userId: 4,
-      form: null, // No form submission yet
-    },
-    {
-      formSubmissionCode: 'DEL005',
-      name: 'Rebecca Wanjiru',
-      email: 'rebecca.wanjiru@county.gov',
-      phone: '+1 (555) 567-8901',
-      county: 'KIAMBU',
-      department: 'Human Resources',
-      supervisor: { name: 'Mr. Samuel Ochieng', id: 5 },
-      userId: 5,
-      form: {
-        totalScore: 95,
-        submissionDate: '2024-01-16',
-        status: 'COMPLETED',
-      },
-    },
-    {
-      formSubmissionCode: 'DEL006',
-      name: 'Anthony Kariuki',
-      email: 'anthony.kariuki@county.gov',
-      phone: '+1 (555) 678-9012',
-      county: 'MACHAKOS',
-      department: 'Agriculture',
-      supervisor: { name: "Dr. Lucy Nyong'o", id: 6 },
-      userId: 6,
-      form: {
-        totalScore: 84,
-        submissionDate: '2024-01-12',
-        status: 'COMPLETED',
-      },
-    },
-  ];
-
   const completedSubmissions = delegates.filter(
-    (delegate) => delegate.form?.status === 'COMPLETED'
+    (delegate: any) => delegate.form?.status === 'COMPLETED'
   ).length;
   const pendingSubmissions = delegates.filter(
-    (delegate) => !delegate.form
+    (delegate: any) => !delegate.form
   ).length;
 
   return (
@@ -185,7 +95,7 @@ export default async function DelegatesPage() {
 
         {/* Delegates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {delegates.map((delegate) => (
+          {delegates.map((delegate: any) => (
             <Card
               key={delegate.formSubmissionCode}
               className="border border-border hover:shadow-md transition-shadow"

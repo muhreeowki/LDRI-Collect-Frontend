@@ -6,10 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Download } from 'lucide-react';
-import { getAllForms, getUserForms } from '@/actions/forms';
+import { Eye } from 'lucide-react';
+import { getUserForms } from '@/actions/forms';
 
 export async function UsersFormsTable() {
   // Simulate async operation

@@ -1,11 +1,9 @@
 'use client';
 
-import { useActionState, useState } from 'react';
 import { toast } from 'sonner';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { object, z } from 'zod';
-import { cn } from '@/lib/utils';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -25,15 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { PhoneInput } from '@/components/ui/phone-input';
-import { CloudUpload, Paperclip } from 'lucide-react';
-import {
-  FileInput,
-  FileUploader,
-  FileUploaderContent,
-  FileUploaderItem,
-} from '@/components/ui/file-upload';
 import { onboard } from '@/actions/auth';
-// import {File} from 'buffer';
 
 export const onboardingFormSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
@@ -48,11 +38,6 @@ export const onboardingFormSchema = z.object({
 });
 
 export default function MyForm() {
-  const dropZoneConfig = {
-    maxFiles: 1,
-    maxSize: 1024 * 1024 * 4,
-    multiple: false,
-  };
   const form = useForm<z.infer<typeof onboardingFormSchema>>({
     resolver: zodResolver(onboardingFormSchema),
   });
