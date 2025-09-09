@@ -32,7 +32,11 @@
     ],
     "outDir": "dist",
     "rootDir": "src",
-    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "target": "ES2017",
+    "skipLibCheck": true,
+    "strict": false,
+    "isolatedModules": true
   },
   "include": [
     "next-env.d.ts",
