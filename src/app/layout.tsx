@@ -1,4 +1,4 @@
-import "./global.css";
+import "./globals.css";
 import { RootProvider } from "fumadocs-ui/provider";
 import { Poppins } from "next/font/google";
 import type { ReactNode } from "react";
@@ -15,10 +15,7 @@ const font = Poppins({
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`scroll-smooth antialiased ${font.className}`}>
-      <head>
-        <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
-      </head>
+      <head></head>
       <body className="selection:bg-zinc-800 selection:text-zinc-100 relative">
         <QueryProvider>
           <RootProvider>{children}</RootProvider>
