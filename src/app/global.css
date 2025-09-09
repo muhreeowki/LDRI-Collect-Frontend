@@ -30,8 +30,19 @@
   }
 
   .h1 {
-    @apply dark:h1-dark h1-light bg-clip-text text-transparent;
+    /* Default (light) */
+    background: linear-gradient(
+        180deg,
+        hsla(224, 71%, 4%, 47%) 0%,
+        hsl(224, 71%, 4%) 100%
+      ),
+      #ffffff;
+    @apply bg-clip-text text-transparent;
   }
+}
+.dark .h1 {
+  background: linear-gradient(180deg, #ffffff 0%, hsl(0, 0%, 67%) 100%),
+    #ffffff;
 }
 .animate-in {
   animation: animateIn 0.3s ease 0.15s both;
