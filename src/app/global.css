@@ -15,13 +15,14 @@
 
 @layer components {
   .h1-dark {
-    background: linear-gradient(180deg, #ffffff 0%, hsl(0, 0%, 67%) 100%),
-      #ffffff;
+    background:
+      linear-gradient(180deg, #ffffff 0%, hsl(0, 0%, 67%) 100%), #ffffff;
     background-clip: text;
   }
 
   .h1-light {
-    background: linear-gradient(
+    background:
+      linear-gradient(
         180deg,
         hsla(224, 71%, 4%, 47%) 0%,
         hsl(224, 71%, 4%) 100%
@@ -31,7 +32,8 @@
 
   .h1 {
     /* Default (light) */
-    background: linear-gradient(
+    background:
+      linear-gradient(
         180deg,
         hsla(224, 71%, 4%, 47%) 0%,
         hsl(224, 71%, 4%) 100%
@@ -41,8 +43,8 @@
   }
 }
 .dark .h1 {
-  background: linear-gradient(180deg, #ffffff 0%, hsl(0, 0%, 67%) 100%),
-    #ffffff;
+  background:
+    linear-gradient(180deg, #ffffff 0%, hsl(0, 0%, 67%) 100%), #ffffff;
 }
 .animate-in {
   animation: animateIn 0.3s ease 0.15s both;
@@ -149,10 +151,11 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
