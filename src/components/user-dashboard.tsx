@@ -1,16 +1,16 @@
 //
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   BarChart,
   Bar,
@@ -18,7 +18,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -26,15 +26,15 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/app-sidebar';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { Button } from "@/components/ui/button";
 
 type SectionScore = { name: string; score: number };
 type Submission = {
@@ -121,7 +121,7 @@ export default function UserDashboard({
                   <td className="border px-3 py-2">
                     {d.name || `Delegate ${idx + 1}`}
                   </td>
-                  <td className="border px-3 py-2">{d.department || '-'}</td>
+                  <td className="border px-3 py-2">{d.department || "-"}</td>
                   <td className="border px-3 py-2 font-semibold">
                     {d.hasSubmitted ? (
                       <span className="text-green-600">Completed</span>
@@ -176,14 +176,14 @@ export default function UserDashboard({
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="p-6">
             {/* Department Scores */}
-            <Tabs defaultValue={'total'}>
+            <Tabs defaultValue={"total"}>
               <TabsList className="justify-start">
-                <TabsTrigger value={'total'}>Total Score</TabsTrigger>
+                <TabsTrigger value={"total"}>Total Score</TabsTrigger>
                 {submissions &&
                   submissions.length > 0 &&
                   submissions.map((sub) => (
                     <TabsTrigger key={sub.id} value={sub.id}>
-                      {sub.delegate?.department || 'Department'}
+                      {sub.delegate?.department || "Department"}
                     </TabsTrigger>
                   ))}
               </TabsList>
@@ -199,7 +199,7 @@ export default function UserDashboard({
                     {aggregate && submissions && submissions.length > 0 ? (
                       <>
                         <p className="text-xl font-bold">
-                          {aggregate.averageScore} /{' '}
+                          {aggregate.averageScore} /{" "}
                           {aggregate.totalMax / submissions.length}
                         </p>
                         <Progress
@@ -240,8 +240,8 @@ export default function UserDashboard({
                           {sub.delegate?.department} - {sub.delegate?.name}
                         </CardTitle>
                         <CardDescription>
-                          This is the score for the{' '}
-                          {sub.delegate?.department || 'N/A'} department.
+                          This is the score for the{" "}
+                          {sub.delegate?.department || "N/A"} department.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
