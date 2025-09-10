@@ -30,6 +30,8 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
+ENV API_URL=http://localhost:4000/api
+
 USER node
 EXPOSE 3000
 CMD ["npm", "run", "start"]
