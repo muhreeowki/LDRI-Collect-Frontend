@@ -187,7 +187,7 @@ export default async function DelegatesPage() {
                       {delegate.name}
                     </CardTitle>
                     <Badge variant="outline" className="text-xs">
-                      {delegate.formSubmissionCode}
+                      {(delegate.formSubmissionCode as string).slice(0, 20)}...
                     </Badge>
                   </div>
                   <div className="text-right">

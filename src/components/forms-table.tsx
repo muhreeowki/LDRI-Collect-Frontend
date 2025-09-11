@@ -5,11 +5,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Eye, Download } from 'lucide-react';
-import { getAllForms } from '@/actions/forms';
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Eye, Download } from "lucide-react";
+import { getAllForms } from "@/actions/forms";
+import Link from "next/link";
 
 export async function FormsTable() {
   // Simulate async operation
@@ -31,8 +32,6 @@ export async function FormsTable() {
             <TableHead>Delegate</TableHead>
             <TableHead>County</TableHead>
             <TableHead>Supervisor</TableHead>
-            <TableHead>Section 1</TableHead>
-            <TableHead>Section 2</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -65,24 +64,18 @@ export async function FormsTable() {
                   <Badge variant="secondary">No Supervisor</Badge>
                 )}
               </TableCell>
-              <TableCell>
-                <Badge variant="outline">
-                  {form.Q_1_1 === 'Yes' ? 'Complete' : 'Incomplete'}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">
-                  {form.Q_2_1 === 'Approved' ? 'Complete' : 'Incomplete'}
-                </Badge>
-              </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button variant="ghost" size="sm">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Download className="h-4 w-4" />
-                  </Button>
+                  <Link href={`/submissions/${form.id}`}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2 bg-transparent"
+                    >
+                      <Eye className="h-4 w-4" />
+                      View Submission
+                    </Button>
+                  </Link>
                 </div>
               </TableCell>
             </TableRow>

@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { CalendarDays, User, Trophy, Eye, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { getUserForms } from '@/actions/forms';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CalendarDays, User, Trophy, Eye, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { getUserForms } from "@/actions/forms";
 
 function getStatusBadgeStyle(status: boolean) {
-  if (status) return 'bg-gray-100 text-gray-800 border-gray-200';
-  return 'bg-gray-50 text-gray-600 border-gray-300';
+  if (status) return "bg-gray-100 text-gray-800 border-gray-200";
+  return "bg-gray-50 text-gray-600 border-gray-300";
 }
 
 export default async function SubmissionsListPage() {
@@ -96,8 +96,8 @@ export default async function SubmissionsListPage() {
                 {Math.round(
                   submissions.reduce(
                     (acc: any, s: any) => acc + s.totalScore,
-                    0
-                  ) / submissions.length
+                    0,
+                  ) / submissions.length,
                 )}
               </div>
             </CardContent>
@@ -132,9 +132,9 @@ export default async function SubmissionsListPage() {
                       <div className="flex items-center gap-1">
                         <CalendarDays className="h-4 w-4" />
                         <span>
-                          Submitted:{' '}
+                          Submitted:{" "}
                           {new Date(
-                            submission.submissionDate
+                            submission.submissionDate,
                           ).toLocaleDateString()}
                         </span>
                       </div>
@@ -154,7 +154,7 @@ export default async function SubmissionsListPage() {
                       </div>
                       <div className="text-xs text-gray-500">Total Score</div>
                     </div>
-                    <Link href={`/dashboard/submissions/${submission.id}`}>
+                    <Link href={`/submissions/${submission.id}`}>
                       <Button
                         variant="outline"
                         size="sm"

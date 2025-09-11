@@ -1,6 +1,4 @@
-//
 "use client";
-
 import React from "react";
 import {
   Card,
@@ -89,67 +87,6 @@ export default function UserDashboard({
     );
   }
 
-  if (isLocked) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="max-w-xl rounded p-8 shadow">
-          <div className="mb-6 text-center w-full">
-            <h2 className="text-2xl font-bold mb-2 text-muted-foreground">
-              Dashboard Locked
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              The dashboard is currently unavailable because not all delegates
-              have completed their submissions. Please wait until all delegates
-              have submitted their forms to view the dashboard.
-            </p>
-          </div>
-          <table className="w-full table-auto border text-sm rounded">
-            <thead>
-              <tr>
-                <th className="border px-3 py-2 text-left">Delegate</th>
-                <th className="border px-3 py-2 text-left">Department</th>
-                <th className="border px-3 py-2 text-left">Status</th>
-                <th className="border px-3 py-2 text-left">Submission</th>
-              </tr>
-            </thead>
-            <tbody className="w-full">
-              {(delegates ?? []).map((d, idx) => (
-                <tr
-                  key={d.formSubmissionCode ?? idx}
-                  className="hover:bg-accent"
-                >
-                  <td className="border px-3 py-2">
-                    {d.name || `Delegate ${idx + 1}`}
-                  </td>
-                  <td className="border px-3 py-2">{d.department || "-"}</td>
-                  <td className="border px-3 py-2 font-semibold">
-                    {d.hasSubmitted ? (
-                      <span className="text-green-600">Completed</span>
-                    ) : (
-                      <span className="text-yellow-600">Pending</span>
-                    )}
-                  </td>
-                  <td className="border px-3 py-2">
-                    {d.hasSubmitted && d.formId ? (
-                      <a
-                        href={`/dashboard/submissions/${d.formId}`}
-                        className="text-blue-600 underline"
-                      >
-                        View Submission
-                      </a>
-                    ) : (
-                      <span className="text-gray-400">-</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -173,161 +110,225 @@ export default function UserDashboard({
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="p-6">
-            {/* Department Scores */}
-            <Tabs defaultValue={"total"}>
-              <TabsList className="justify-start">
-                <TabsTrigger value={"total"}>Total Score</TabsTrigger>
+        {isLocked ? (
+          <div className="flex h-screen items-center justify-center">
+            <div className="max-w-xl rounded p-8 shadow">
+              <div className="mb-6 text-center w-full">
+                <h2 className="text-2xl font-bold mb-2 text-muted-foreground">
+                  Data Visualization Locked
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  The Data Visualization is currently unavailable because not
+                  all delegates have completed their submissions. Please wait
+                  until all delegates have submitted their forms to view the
+                  dashboard.
+                </p>
+              </div>
+              <table className="w-full table-auto border text-sm rounded">
+                <thead>
+                  <tr>
+                    <th className="border px-3 py-2 text-left">Delegate</th>
+                    <th className="border px-3 py-2 text-left">Department</th>
+                    <th className="border px-3 py-2 text-left">Status</th>
+                    <th className="border px-3 py-2 text-left">Submission</th>
+                  </tr>
+                </thead>
+                <tbody className="w-full">
+                  {(delegates ?? []).map((d, idx) => (
+                    <tr
+                      key={d.formSubmissionCode ?? idx}
+                      className="hover:bg-accent"
+                    >
+                      <td className="border px-3 py-2">
+                        {d.name || `Delegate ${idx + 1}`}
+                      </td>
+                      <td className="border px-3 py-2">
+                        {d.department || "-"}
+                      </td>
+                      <td className="border px-3 py-2 font-semibold">
+                        {d.hasSubmitted ? (
+                          <span className="text-green-600">Completed</span>
+                        ) : (
+                          <span className="text-yellow-600">Pending</span>
+                        )}
+                      </td>
+                      <td className="border px-3 py-2">
+                        {d.hasSubmitted && d.formId ? (
+                          <a
+                            href={`/submissions/${d.formId}`}
+                            className="text-blue-600 underline"
+                          >
+                            View Submission
+                          </a>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            <div className="p-6">
+              {/* Department Scores */}
+              <Tabs defaultValue={"total"}>
+                <TabsList className="justify-start">
+                  <TabsTrigger value={"total"}>Total Score</TabsTrigger>
+                  {submissions &&
+                    submissions.length > 0 &&
+                    submissions.map((sub) => (
+                      <TabsTrigger key={sub.id} value={sub.id}>
+                        {sub.delegate?.department || "Department"}
+                      </TabsTrigger>
+                    ))}
+                </TabsList>
+                <TabsContent value="total">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Total Score</CardTitle>
+                      <CardDescription>
+                        This is the average score across all departments.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {aggregate && submissions && submissions.length > 0 ? (
+                        <>
+                          <p className="text-xl font-bold">
+                            {aggregate.averageScore} /{" "}
+                            {aggregate.totalMax / submissions.length}
+                          </p>
+                          <Progress
+                            value={
+                              (aggregate.averageScore /
+                                (aggregate.totalMax / submissions.length)) *
+                              100
+                            }
+                          />
+                          <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={aggregate.sections || []}>
+                              <XAxis dataKey="name" />
+                              <YAxis domain={[0, 10]} />
+                              <Tooltip />
+                              <Bar
+                                dataKey="score"
+                                fill="#16a34a"
+                                radius={[4, 4, 0, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </>
+                      ) : (
+                        <p className="text-muted-foreground">
+                          No aggregate data available.
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
                 {submissions &&
                   submissions.length > 0 &&
                   submissions.map((sub) => (
-                    <TabsTrigger key={sub.id} value={sub.id}>
-                      {sub.delegate?.department || "Department"}
-                    </TabsTrigger>
+                    <TabsContent key={sub.id} value={sub.id}>
+                      <Card key={sub.id}>
+                        <CardHeader>
+                          <CardTitle>
+                            {sub.delegate?.department} - {sub.delegate?.name}
+                          </CardTitle>
+                          <CardDescription>
+                            This is the score for the{" "}
+                            {sub.delegate?.department || "N/A"} department.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <p className="text-xl font-bold">
+                            {sub.totalScore} / {sub.maxScore}
+                          </p>
+                          <Progress
+                            value={
+                              sub.maxScore
+                                ? (sub.totalScore / sub.maxScore) * 100
+                                : 0
+                            }
+                          />
+                          <div>
+                            <a
+                              href={`/submissions/${sub.id}`}
+                              className="text-blue-600 underline text-sm"
+                            >
+                              Open details
+                            </a>
+                          </div>
+                          <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={sub.sections || []}>
+                              <XAxis dataKey="name" />
+                              <YAxis domain={[0, 10]} />
+                              <Tooltip />
+                              <Bar
+                                dataKey="score"
+                                fill="#3b82f6"
+                                radius={[4, 4, 0, 0]}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
                   ))}
-              </TabsList>
-              <TabsContent value="total">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Total Score</CardTitle>
-                    <CardDescription>
-                      This is the average score across all departments.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {aggregate && submissions && submissions.length > 0 ? (
-                      <>
-                        <p className="text-xl font-bold">
-                          {aggregate.averageScore} /{" "}
-                          {aggregate.totalMax / submissions.length}
-                        </p>
-                        <Progress
-                          value={
-                            (aggregate.averageScore /
-                              (aggregate.totalMax / submissions.length)) *
-                            100
-                          }
-                        />
-                        <ResponsiveContainer width="100%" height={300}>
-                          <BarChart data={aggregate.sections || []}>
-                            <XAxis dataKey="name" />
-                            <YAxis domain={[0, 10]} />
-                            <Tooltip />
-                            <Bar
-                              dataKey="score"
-                              fill="#16a34a"
-                              radius={[4, 4, 0, 0]}
-                            />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </>
-                    ) : (
-                      <p className="text-muted-foreground">
-                        No aggregate data available.
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              {submissions &&
-                submissions.length > 0 &&
-                submissions.map((sub) => (
-                  <TabsContent key={sub.id} value={sub.id}>
-                    <Card key={sub.id}>
-                      <CardHeader>
-                        <CardTitle>
-                          {sub.delegate?.department} - {sub.delegate?.name}
-                        </CardTitle>
-                        <CardDescription>
-                          This is the score for the{" "}
-                          {sub.delegate?.department || "N/A"} department.
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <p className="text-xl font-bold">
-                          {sub.totalScore} / {sub.maxScore}
-                        </p>
-                        <Progress
-                          value={
-                            sub.maxScore
-                              ? (sub.totalScore / sub.maxScore) * 100
-                              : 0
-                          }
-                        />
-                        <div>
-                          <a
-                            href={`/dashboard/submissions/${sub.id}`}
-                            className="text-blue-600 underline text-sm"
-                          >
-                            Open details
-                          </a>
-                        </div>
-                        <ResponsiveContainer width="100%" height={300}>
-                          <BarChart data={sub.sections || []}>
-                            <XAxis dataKey="name" />
-                            <YAxis domain={[0, 10]} />
-                            <Tooltip />
-                            <Bar
-                              dataKey="score"
-                              fill="#3b82f6"
-                              radius={[4, 4, 0, 0]}
-                            />
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                ))}
-            </Tabs>
-            {/* Submissions Tab */}
-          </div>
-          <div className="p-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Scores Table by Department and Section</CardTitle>
-              </CardHeader>
-              <CardContent className="overflow-auto">
-                <table className="w-full table-auto border text-sm">
-                  <thead className="bg-muted">
-                    <tr>
-                      <th className="border px-3 py-2 text-left">Department</th>
-                      {(submissions &&
-                        submissions.length > 0 &&
-                        aggregate.sections?.map((section: SectionScore) => (
-                          <th
-                            key={section.name}
-                            className="border px-3 py-2 text-left"
-                          >
-                            {section.name}
-                          </th>
-                        ))) ||
-                        null}
-                      <th className="border px-3 py-2 text-left">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {submissions.map((sub) => (
-                      <tr key={sub.id} className="hover:bg-accent">
-                        <td className="border px-3 py-2">
-                          {sub.delegate?.department}
-                        </td>
-                        {sub.sections?.map((section: SectionScore) => (
-                          <td key={section.name} className="border px-3 py-2">
-                            {section.score}
-                          </td>
-                        )) || null}
-                        <td className="border px-3 py-2 font-semibold">
-                          {sub.totalScore}
-                        </td>
+              </Tabs>
+              {/* Submissions Tab */}
+            </div>
+            <div className="p-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Scores Table by Department and Section</CardTitle>
+                </CardHeader>
+                <CardContent className="overflow-auto">
+                  <table className="w-full table-auto border text-sm">
+                    <thead className="bg-muted">
+                      <tr>
+                        <th className="border px-3 py-2 text-left">
+                          Department
+                        </th>
+                        {(submissions &&
+                          submissions.length > 0 &&
+                          aggregate.sections?.map((section: SectionScore) => (
+                            <th
+                              key={section.name}
+                              className="border px-3 py-2 text-left"
+                            >
+                              {section.name}
+                            </th>
+                          ))) ||
+                          null}
+                        <th className="border px-3 py-2 text-left">Total</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </CardContent>
-            </Card>
+                    </thead>
+                    <tbody>
+                      {submissions.map((sub) => (
+                        <tr key={sub.id} className="hover:bg-accent">
+                          <td className="border px-3 py-2">
+                            {sub.delegate?.department}
+                          </td>
+                          {sub.sections?.map((section: SectionScore) => (
+                            <td key={section.name} className="border px-3 py-2">
+                              {section.score}
+                            </td>
+                          )) || null}
+                          <td className="border px-3 py-2 font-semibold">
+                            {sub.totalScore}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        )}
       </SidebarInset>
     </SidebarProvider>
   );

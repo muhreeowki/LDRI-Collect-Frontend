@@ -4,22 +4,22 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { User, FileText, Trophy, CheckCircle, ArrowLeft } from 'lucide-react';
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { User, FileText, Trophy, CheckCircle, ArrowLeft } from "lucide-react";
 
-import Link from 'next/link';
-import { AssessmentAnswers } from '@/components/form-answers';
-import { getFormById } from '@/actions/forms';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { AssessmentAnswers } from "@/components/form-answers";
+import { getFormById } from "@/actions/forms";
+import { Button } from "@/components/ui/button";
 
 export default async function FormSubmissionsPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const resp = await getFormById(params.id);
+  const resp = await getFormById((await params).id);
   if (!resp.success) {
     return (
       <div className="p-6">
@@ -40,184 +40,184 @@ export default async function FormSubmissionsPage({
   const overallPercentage = (form.totalScore / 100) * 100;
   const sectionData = [
     {
-      name: 'Leadership',
+      name: "Leadership",
       score: form.section1Score,
       maxScore: 20,
-      color: 'bg-blue-500',
+      color: "bg-blue-500",
     },
     {
-      name: 'Communication',
+      name: "Communication",
       score: form.section2Score,
       maxScore: 20,
-      color: 'bg-green-500',
+      color: "bg-green-500",
     },
     {
-      name: 'Technical Skills',
+      name: "Technical Skills",
       score: form.section3Score,
       maxScore: 20,
-      color: 'bg-purple-500',
+      color: "bg-purple-500",
     },
     {
-      name: 'Problem Solving',
+      name: "Problem Solving",
       score: form.section4Score,
       maxScore: 20,
-      color: 'bg-orange-500',
+      color: "bg-orange-500",
     },
     {
-      name: 'Performance',
+      name: "Performance",
       score: form.section5Score,
       maxScore: 20,
-      color: 'bg-red-500',
+      color: "bg-red-500",
     },
   ];
 
   const questionsBySection = [
     {
-      sectionName: 'Leadership',
+      sectionName: "Leadership",
       questions: [
         {
-          id: 'Q_1_1',
-          question: 'Understanding of company policies',
+          id: "Q_1_1",
+          question: "Understanding of company policies",
           answer: form.Q_1_1,
         },
         {
-          id: 'Q_1_2',
-          question: 'Initiative and team leadership',
+          id: "Q_1_2",
+          question: "Initiative and team leadership",
           answer: form.Q_1_2,
         },
         {
-          id: 'Q_1_3',
-          question: 'Delegation and support',
+          id: "Q_1_3",
+          question: "Delegation and support",
           answer: form.Q_1_3,
         },
         {
-          id: 'Q_1_4',
-          question: 'Decision making under pressure',
+          id: "Q_1_4",
+          question: "Decision making under pressure",
           answer: form.Q_1_4,
         },
         {
-          id: 'Q_1_5',
-          question: 'Mentoring and development',
+          id: "Q_1_5",
+          question: "Mentoring and development",
           answer: form.Q_1_5,
         },
       ],
     },
     {
-      sectionName: 'Communication',
+      sectionName: "Communication",
       questions: [
         {
-          id: 'Q_2_1',
-          question: 'Stakeholder communication',
+          id: "Q_2_1",
+          question: "Stakeholder communication",
           answer: form.Q_2_1,
         },
         {
-          id: 'Q_2_2',
-          question: 'Written communication skills',
+          id: "Q_2_2",
+          question: "Written communication skills",
           answer: form.Q_2_2,
         },
         {
-          id: 'Q_2_3',
-          question: 'Active listening abilities',
+          id: "Q_2_3",
+          question: "Active listening abilities",
           answer: form.Q_2_3,
         },
         {
-          id: 'Q_2_4',
-          question: 'Presentation skills',
+          id: "Q_2_4",
+          question: "Presentation skills",
           answer: form.Q_2_4,
         },
         {
-          id: 'Q_2_5',
-          question: 'Conflict resolution',
+          id: "Q_2_5",
+          question: "Conflict resolution",
           answer: form.Q_2_5,
         },
       ],
     },
     {
-      sectionName: 'Technical Skills',
+      sectionName: "Technical Skills",
       questions: [
         {
-          id: 'Q_3_1',
-          question: 'Technical tool proficiency',
+          id: "Q_3_1",
+          question: "Technical tool proficiency",
           answer: form.Q_3_1,
         },
         {
-          id: 'Q_3_2',
-          question: 'Continuous learning',
+          id: "Q_3_2",
+          question: "Continuous learning",
           answer: form.Q_3_2,
         },
         {
-          id: 'Q_3_3',
-          question: 'Technology implementation',
+          id: "Q_3_3",
+          question: "Technology implementation",
           answer: form.Q_3_3,
         },
         {
-          id: 'Q_3_4',
-          question: 'Problem troubleshooting',
+          id: "Q_3_4",
+          question: "Problem troubleshooting",
           answer: form.Q_3_4,
         },
         {
-          id: 'Q_3_5',
-          question: 'Knowledge sharing',
+          id: "Q_3_5",
+          question: "Knowledge sharing",
           answer: form.Q_3_5,
         },
       ],
     },
     {
-      sectionName: 'Problem Solving',
+      sectionName: "Problem Solving",
       questions: [
         {
-          id: 'Q_4_1',
-          question: 'Innovative approaches',
+          id: "Q_4_1",
+          question: "Innovative approaches",
           answer: form.Q_4_1,
         },
         {
-          id: 'Q_4_2',
-          question: 'Systematic analysis',
+          id: "Q_4_2",
+          question: "Systematic analysis",
           answer: form.Q_4_2,
         },
         {
-          id: 'Q_4_3',
-          question: 'Cross-functional collaboration',
+          id: "Q_4_3",
+          question: "Cross-functional collaboration",
           answer: form.Q_4_3,
         },
         {
-          id: 'Q_4_4',
-          question: 'Creative solutions',
+          id: "Q_4_4",
+          question: "Creative solutions",
           answer: form.Q_4_4,
         },
         {
-          id: 'Q_4_5',
-          question: 'Solution evaluation',
+          id: "Q_4_5",
+          question: "Solution evaluation",
           answer: form.Q_4_5,
         },
       ],
     },
     {
-      sectionName: 'Performance',
+      sectionName: "Performance",
       questions: [
         {
-          id: 'Q_5_1',
-          question: 'Consistent delivery',
+          id: "Q_5_1",
+          question: "Consistent delivery",
           answer: form.Q_5_1,
         },
         {
-          id: 'Q_5_2',
-          question: 'Quality ownership',
+          id: "Q_5_2",
+          question: "Quality ownership",
           answer: form.Q_5_2,
         },
         {
-          id: 'Q_5_3',
-          question: 'Adaptability',
+          id: "Q_5_3",
+          question: "Adaptability",
           answer: form.Q_5_3,
         },
         {
-          id: 'Q_5_4',
-          question: 'Feedback implementation',
+          id: "Q_5_4",
+          question: "Feedback implementation",
           answer: form.Q_5_4,
         },
         {
-          id: 'Q_5_5',
-          question: 'Reliability',
+          id: "Q_5_5",
+          question: "Reliability",
           answer: form.Q_5_5,
         },
       ],
@@ -230,7 +230,7 @@ export default async function FormSubmissionsPage({
         {/* Header */}
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <Link href="/dashboard/submissions">
+            <Link href="/">
               <Button
                 variant="ghost"
                 size="sm"
@@ -260,8 +260,8 @@ export default async function FormSubmissionsPage({
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-2">
-                <Badge variant={form.completed ? 'default' : 'secondary'}>
-                  {form.completed ? 'Completed' : 'In Progress'}
+                <Badge variant={form.completed ? "default" : "secondary"}>
+                  {form.completed ? "Completed" : "In Progress"}
                 </Badge>
               </div>
             </CardContent>
@@ -359,12 +359,12 @@ export default async function FormSubmissionsPage({
                         <span>{percentage.toFixed(0)}%</span>
                         <span>
                           {percentage >= 80
-                            ? 'Excellent'
+                            ? "Excellent"
                             : percentage >= 60
-                            ? 'Good'
-                            : percentage >= 40
-                            ? 'Fair'
-                            : 'Needs Improvement'}
+                              ? "Good"
+                              : percentage >= 40
+                                ? "Fair"
+                                : "Needs Improvement"}
                         </span>
                       </div>
                     </div>

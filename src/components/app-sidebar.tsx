@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 import {
   Sidebar,
@@ -11,22 +11,22 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from '@/components/ui/sidebar';
+} from "@/components/ui/sidebar";
 
 // This is sample data.
 const data = {
   navMain: [
     {
-      title: 'Your Data',
-      url: '#',
+      title: "Your Data",
+      url: "#",
       items: [
         {
-          title: 'Delegates',
-          url: '/dashboard/delegates',
+          title: "Delegates",
+          url: "/dashboard/delegates",
         },
         {
-          title: 'Forms Submissions',
-          url: '/dashboard/submissions',
+          title: "Forms Submissions",
+          url: "/submissions",
         },
       ],
     },

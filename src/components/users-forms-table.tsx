@@ -5,10 +5,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
-import { getUserForms } from '@/actions/forms';
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
+import { getUserForms } from "@/actions/forms";
 
 export async function UsersFormsTable() {
   // Simulate async operation
@@ -52,7 +52,7 @@ export async function UsersFormsTable() {
               <TableCell className="font-bold">{form.totalScore}</TableCell>
               <TableCell className="w-0">
                 <div className="flex justify-end">
-                  <form action={`/dashboard/submissions/${form.id}`}>
+                  <form action={`/submissions/${form.id}`}>
                     <Button variant="ghost" size="sm">
                       <Eye className="h-4 w-4" />
                     </Button>
