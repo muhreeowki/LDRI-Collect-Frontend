@@ -1,45 +1,47 @@
-'use server';
+"use server";
 
-import { delegateListSchema } from '@/lib/validation-schemas';
+import { delegateListSchema } from "@/lib/validation-schemas";
+import { revalidatePath } from "next/cache";
 // import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
 export async function createDelegates(formData: FormData) {
   try {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
+    const accessToken = cookieStore.get("accessToken")?.value;
     if (accessToken === undefined) {
-      return { success: false, error: 'No User Signed In' };
+      return { success: false, error: "No User Signed In" };
     }
-    console.log('Access Token:', accessToken);
+    console.log("Access Token:", accessToken);
     // Extract the delegates data from FormData
-    const rawData = formData.get('delegates');
+    const rawData = formData.get("delegates");
     if (!rawData) {
-      throw new Error('No delegates data provided');
+      throw new Error("No delegates data provided");
     }
     const delegates = JSON.parse(rawData as string);
     const validatedData = delegateListSchema.parse({ delegates });
-    console.log('Creating delegates:', validatedData.delegates);
+    console.log("Creating delegates:", validatedData.delegates);
     const response = await fetch(`${process.env.API_URL}/delegates/many`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(validatedData.delegates),
     });
     const json = await response.json();
     if (!response.ok) {
-      throw new Error(json.message || 'Failed to create delegates');
+      throw new Error(json.message || "Failed to create delegates");
     }
     // TODO: You might want to redirect to a success page or return success response
-    return { success: true, message: 'Delegates created successfully!' };
+    revalidatePath("/delegates");
+    return { success: true, message: "Delegates created successfully!" };
   } catch (error) {
-    console.error('Error creating delegates:', error);
+    console.error("Error creating delegates:", error);
     if (error instanceof Error) {
       return { success: false, error: error.message };
     }
-    return { success: false, error: 'An unexpected error occurred' };
+    return { success: false, error: "An unexpected error occurred" };
   }
 }
 
@@ -48,39 +50,39 @@ export async function getDelegate(formSubmissionCode: string) {
     const response = await fetch(
       `${process.env.API_URL}/delegates/${formSubmissionCode}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-      }
+      },
     );
     const json = await response.json();
     if (!response.ok) {
-      throw new Error(json.message || 'Failed to fetch delegate');
+      throw new Error(json.message || "Failed to fetch delegate");
     }
     return { success: true, delegate: json };
   } catch (error) {
-    console.error('Error fetching delegate:', error);
+    console.error("Error fetching delegate:", error);
     if (error instanceof Error) {
       return { success: false, error: error.message };
     }
-    return { success: false, error: 'An unexpected error occurred' };
+    return { success: false, error: "An unexpected error occurred" };
   }
 }
 
 export async function getUsersDelegates() {
   try {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
+    const accessToken = cookieStore.get("accessToken")?.value;
     if (accessToken === undefined) {
-      return { success: false, error: 'No User Signed In' };
+      return { success: false, error: "No User Signed In" };
     }
-    console.log('Access Token:', accessToken);
+    console.log("Access Token:", accessToken);
 
     const response = await fetch(`${process.env.API_URL}/users/delegates`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
@@ -88,28 +90,28 @@ export async function getUsersDelegates() {
     const json = await response.json();
 
     if (!response.ok) {
-      throw new Error(json.message || 'Failed to fetch delegates');
+      throw new Error(json.message || "Failed to fetch delegates");
     }
 
     return { success: true, delegates: json };
   } catch (error) {
-    console.error('Error fetching delegates:', error);
+    console.error("Error fetching delegates:", error);
     if (error instanceof Error) {
       return { success: false, error: error.message };
     }
-    return { success: false, error: 'An unexpected error occurred' };
+    return { success: false, error: "An unexpected error occurred" };
   }
 }
 
 export async function verifyDelegate(formData: FormData) {
   const cookieStore = await cookies();
 
-  const data = { formSubmissionCode: formData.get('formSubmissionCode') };
+  const data = { formSubmissionCode: formData.get("formSubmissionCode") };
 
   const response = await fetch(`${process.env.API_URL}/delegates/verify`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
   });
@@ -117,21 +119,21 @@ export async function verifyDelegate(formData: FormData) {
   const json = await response.json();
 
   if (!response.ok) {
-    console.error('Error verifying delegate:', json);
+    console.error("Error verifying delegate:", json);
     return {
       success: false,
-      error: json.message || 'Failed to verify delegates',
+      error: json.message || "Failed to verify delegates",
     };
   }
 
-  console.log('Delegate verification response:', json);
+  console.log("Delegate verification response:", json);
   if (json.formSubmissionCode != undefined) {
-    cookieStore.set('delegate', JSON.stringify(json), {
+    cookieStore.set("delegate", JSON.stringify(json), {
       httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
+      sameSite: "lax",
+      path: "/",
       expires: new Date(Date.now() + 60 * 60 * 10000000),
     });
   } // Set the access token cookie with a long expiration time
-  return { success: true, message: 'Delegate verified successfully!' };
+  return { success: true, message: "Delegate verified successfully!" };
 }

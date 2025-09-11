@@ -1,9 +1,53 @@
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, User, Mail, Phone, Building } from 'lucide-react';
-import { getUsersDelegates } from '@/actions/delegate-actions';
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowLeft, User, Mail, Phone, Building } from "lucide-react";
+import DelegateForm from "@/components/delegate-form";
+import { getUsersDelegates } from "@/actions/delegate-actions";
+
+interface DelegateForm {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  county: string;
+  department: string;
+}
+
+function EmptyDelegatesState() {
+  return (
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Link href="/">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
+            </Link>
+          </div>
+          <div className="text-center space-y-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Delegates</h1>
+              <p className="text-muted-foreground">
+                No delegates found. Create your first delegate to get started.
+              </p>
+            </div>
+            <DelegateForm />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default async function DelegatesPage() {
   const resp = await getUsersDelegates();
@@ -17,11 +61,23 @@ export default async function DelegatesPage() {
   const delegates = resp.delegates;
 
   const completedSubmissions = delegates.filter(
-    (delegate: any) => delegate.form?.status === 'COMPLETED'
+    (delegate: any) => delegate.form?.status === "COMPLETED",
   ).length;
   const pendingSubmissions = delegates.filter(
-    (delegate: any) => !delegate.form
+    (delegate: any) => !delegate.form,
   ).length;
+  const averageScore =
+    delegates
+      .filter((delegate: any) => delegate.form?.totalScore)
+      .reduce(
+        (sum: any, delegate: any) => sum + (delegate.form?.totalScore || 0),
+        0,
+      ) / delegates.filter((delegate: any) => delegate.form?.totalScore).length;
+
+  // Conditional rendering based on delegates availability
+  if (delegates.length === 0) {
+    return <EmptyDelegatesState />;
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -42,17 +98,28 @@ export default async function DelegatesPage() {
               </Link>
             </div>
             <h1 className="text-3xl font-bold text-foreground">
-              Your Delegates
+              All Delegates
             </h1>
             <p className="text-muted-foreground">
               Manage and view all registered delegates and their assessment
               submissions
             </p>
           </div>
+          <Dialog defaultOpen={false}>
+            <DialogTrigger asChild>
+              <Button className="bg-foreground text-background hover:bg-foreground/90">
+                <User className="h-4 w-4 mr-2" />
+                Create New Delegate
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="w-full">
+              <DelegateForm />
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="border border-border">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -88,6 +155,19 @@ export default async function DelegatesPage() {
             <CardContent>
               <div className="text-2xl font-bold text-foreground">
                 {pendingSubmissions}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-border">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Average Score
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">
+                {averageScore.toFixed(1)}%
               </div>
             </CardContent>
           </Card>
@@ -147,7 +227,7 @@ export default async function DelegatesPage() {
 
                   <div className="flex items-center gap-2 text-sm">
                     <Building className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground capitalize">
+                    <span className="text-muted-foreground">
                       {delegate.county} • {delegate.department}
                     </span>
                   </div>
@@ -156,23 +236,20 @@ export default async function DelegatesPage() {
                 {delegate.form && (
                   <div className="pt-2 border-t border-border">
                     <div className="text-xs text-muted-foreground">
-                      Submitted:{' '}
+                      Submitted:{" "}
                       {new Date(
-                        delegate.form.submissionDate
+                        delegate.form.submissionDate,
                       ).toLocaleDateString()}
                     </div>
                   </div>
                 )}
 
-                <a href={`/dashboard/delegates/${delegate.formSubmissionCode}`}>
-                  <Button
-                    className="w-full bg-transparent mt-4"
-                    variant="outline"
-                  >
+                <Link href={`/delegates/${delegate.formSubmissionCode}`}>
+                  <Button className="w-full bg-transparent" variant="outline">
                     <User className="h-4 w-4 mr-2" />
                     View Details
                   </Button>
-                </a>
+                </Link>
               </CardContent>
             </Card>
           ))}
