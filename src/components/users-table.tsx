@@ -10,17 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Edit } from "lucide-react";
 import { getUsers, validateUser } from "@/actions/users";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import ValidateButton from "./validate-button";
+import { Dialog } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
 
 export async function UsersTable() {
@@ -58,18 +48,15 @@ export async function UsersTable() {
               <TableCell className="capitalize">{user.county}</TableCell>
               <TableCell>{user.department}</TableCell>
               <TableCell>
-                <Dialog>
-                  <Input type="hidden" name="id" value={user.id} />
-                  {user.valid ? (
-                    <Badge variant="default" className="cursor-default">
-                      Valid
-                    </Badge>
-                  ) : (
-                    <Badge variant="secondary" className="cursor-default">
-                      Pending
-                    </Badge>
-                  )}
-                </Dialog>
+                {user.valid ? (
+                  <Badge variant="default" className="cursor-default">
+                    Valid
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary" className="cursor-default">
+                    Pending
+                  </Badge>
+                )}
               </TableCell>
               <TableCell>{user._count.Delegates}</TableCell>
               <TableCell>{user._count.FormSubmissions}</TableCell>
