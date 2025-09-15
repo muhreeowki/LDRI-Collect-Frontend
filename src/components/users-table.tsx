@@ -5,11 +5,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Eye, Edit } from 'lucide-react';
-import { getUsers, validateUser } from '@/actions/users';
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Eye, Edit } from "lucide-react";
+import { getUsers, validateUser } from "@/actions/users";
 import {
   Dialog,
   DialogClose,
@@ -19,7 +19,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
+import ValidateButton from "./validate-button";
+import { Input } from "./ui/input";
 
 export async function UsersTable() {
   // Simulate async operation
@@ -57,45 +59,30 @@ export async function UsersTable() {
               <TableCell>{user.department}</TableCell>
               <TableCell>
                 <Dialog>
-                  <form>
-                    {user.valid ? (
-                      <Badge variant="default" className="cursor-default">
-                        Valid
-                      </Badge>
-                    ) : (
-                      <DialogTrigger asChild>
-                        <Badge variant="secondary" className="cursor-pointer">
-                          Pending
-                        </Badge>
-                      </DialogTrigger>
-                    )}
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Validate User</DialogTitle>
-                        <DialogDescription>
-                          {' '}
-                          Are you sure you want to validate this user?
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <div className="flex flex-row gap-4 justify-between w-full">
-                            <Button variant="outline">Cancel</Button>
-                            <form action={validateUser}>
-                              <input type="hidden" name="id" value={user.id} />
-                              <Button type="submit">Validate</Button>
-                            </form>
-                          </div>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </form>
+                  <Input type="hidden" name="id" value={user.id} />
+                  {user.valid ? (
+                    <Badge variant="default" className="cursor-default">
+                      Valid
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary" className="cursor-default">
+                      Pending
+                    </Badge>
+                  )}
                 </Dialog>
               </TableCell>
               <TableCell>{user._count.Delegates}</TableCell>
               <TableCell>{user._count.FormSubmissions}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
+                  {!user.valid && (
+                    <form action={validateUser}>
+                      <Input type="hidden" name="id" value={user.id} />
+                      <Button variant="secondary" size="sm">
+                        Validate
+                      </Button>
+                    </form>
+                  )}
                   <Button variant="ghost" size="sm">
                     <Eye className="h-4 w-4" />
                   </Button>
