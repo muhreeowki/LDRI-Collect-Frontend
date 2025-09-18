@@ -1,16 +1,16 @@
-import { Suspense } from 'react';
+import { Suspense } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { UsersTable } from '@/components/users-table';
-import { FormsTable } from '@/components/forms-table';
-import { StatsCards } from '@/components/stats-cards';
-import { Users, FileText } from 'lucide-react';
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { UsersTable } from "@/components/users-table";
+import { FormsTable } from "@/components/forms-table";
+import { StatsCards } from "@/components/stats-cards";
+import { Users, FileText } from "lucide-react";
 
 export default function AdminDashboard() {
   return (
@@ -29,7 +29,6 @@ export default function AdminDashboard() {
           <Suspense fallback={<StatsCardsSkeleton />}>
             <StatsCards />
           </Suspense>
-
           {/* Users Table - Large Card */}
           <Card className="md:col-span-2 lg:col-span-4">
             <CardHeader>

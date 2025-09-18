@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { toast } from 'sonner';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,28 +13,31 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { PhoneInput } from '@/components/ui/phone-input';
-import { onboard } from '@/actions/auth';
+} from "@/components/ui/select";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { onboard } from "@/actions/auth";
 
 export const onboardingFormSchema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters'),
-  sex: z.string().min(1, 'Sex is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Phone is required'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  nationalId: z.string().min(1, 'National ID is required'),
-  county: z.string().min(1, 'County is required'),
-  position: z.string().min(2, 'Position is required'),
-  department: z.string().min(1, 'Department is required'),
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  sex: z.string().min(1, "Sex is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(10, "Phone is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  nationalId: z.string().min(1, "National ID is required"),
+  county: z.string().min(1, "County is required"),
+  position: z.string().min(2, "Position is required"),
+  department: z.string().min(1, "Department is required"),
+  authorizationFormLink: z
+    .string({ required_error: "Link to authorization form is required" })
+    .url("Invalid URL format"),
 });
 
 export default function MyForm() {
@@ -46,16 +49,16 @@ export default function MyForm() {
     try {
       const response = await onboard(form);
       if (response.success === false) {
-        toast.error(response.error || 'Failed to onboard. Please try again.');
+        toast.error(response.error || "Failed to onboard. Please try again.");
         return;
       } else {
         // Gate success page via cookie; middleware checks `ldriSuccess`
-        document.cookie = 'ldriSuccess=true; path=/; max-age=' + 60 * 10;
-        window.location.href = '/onboarding/success';
+        document.cookie = "ldriSuccess=true; path=/; max-age=" + 60 * 10;
+        window.location.href = "/onboarding/success";
       }
     } catch (error) {
-      console.error('Form submission error', error);
-      toast.error('Failed to submit the form. Please try again.');
+      console.error("Form submission error", error);
+      toast.error("Failed to submit the form. Please try again.");
     }
   }
 
@@ -265,6 +268,28 @@ export default function MyForm() {
             />
           </div>
         </div>
+
+        <FormField
+          control={form.control}
+          name="authorizationFormLink"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Authorization Form</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter link to authorization form."
+                  type="url"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Provide a link to an authorization form from your superior. Make
+                sure the link is publicly accessible.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/**/}
         {/* <Controller */}
         {/*   control={form.control} */}

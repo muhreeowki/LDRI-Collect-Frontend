@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Edit } from "lucide-react";
 import { getUsers, validateUser } from "@/actions/users";
-import { Dialog } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
 
 export async function UsersTable() {
@@ -37,6 +36,7 @@ export async function UsersTable() {
             <TableHead>Status</TableHead>
             <TableHead>Delegates</TableHead>
             <TableHead>Forms</TableHead>
+            <TableHead>Authorization</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -54,28 +54,41 @@ export async function UsersTable() {
                   </Badge>
                 ) : (
                   <Badge variant="secondary" className="cursor-default">
-                    Pending
+                    Pending Validation
                   </Badge>
                 )}
               </TableCell>
               <TableCell>{user._count.Delegates}</TableCell>
               <TableCell>{user._count.FormSubmissions}</TableCell>
+              <TableCell>
+                <a
+                  href={user.authorizationFormLink}
+                  target="_blank"
+                  className="text-blue-400 hover:underline"
+                >
+                  View Document
+                </a>
+              </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
                   {!user.valid && (
                     <form action={validateUser}>
                       <Input type="hidden" name="id" value={user.id} />
-                      <Button variant="secondary" size="sm">
+                      <Button
+                        size="sm"
+                        className="bg-amber-300 hover:bg-amber-400"
+                        type="submit"
+                      >
                         Validate
                       </Button>
                     </form>
                   )}
-                  <Button variant="ghost" size="sm">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Edit className="h-4 w-4" />
-                  </Button>
+                  {/* <Button variant="ghost" size="sm"> */}
+                  {/*   <Eye className="h-4 w-4" /> */}
+                  {/* </Button> */}
+                  {/* <Button variant="ghost" size="sm"> */}
+                  {/*   <Edit className="h-4 w-4" /> */}
+                  {/* </Button> */}
                 </div>
               </TableCell>
             </TableRow>
