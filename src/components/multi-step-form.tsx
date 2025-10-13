@@ -1,17 +1,17 @@
 // app/components/MultiStepForm.tsx
 
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { submitBridgeForm } from '@/actions/forms';
-import Step1Governance, { Step1Data } from '@/components/form-steps/step1';
-import Step2Finance, { Step2Data } from '@/components/form-steps/step2';
-import Step3Technical, { Step3Data } from '@/components/form-steps/step3';
-import Step4Infrastructure, { Step4Data } from '@/components/form-steps/step4';
-import Step5Stakeholders, { Step5Data } from '@/components/form-steps/step5';
-import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { submitBridgeForm } from "@/actions/forms";
+import Step1Governance, { Step1Data } from "@/components/form-steps/step1";
+import Step2Finance, { Step2Data } from "@/components/form-steps/step2";
+import Step3Technical, { Step3Data } from "@/components/form-steps/step3";
+import Step4Infrastructure, { Step4Data } from "@/components/form-steps/step4";
+import Step5Stakeholders, { Step5Data } from "@/components/form-steps/step5";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface MultiStepFormData {
   step1: Step1Data;
@@ -30,12 +30,12 @@ const initialData: Partial<MultiStepFormData> = {
 };
 
 const stepTitles = [
-  'Governance',
-  'Finance',
-  'Technical Capacity',
-  'Data Infrastructure',
-  'Stakeholder Engagement',
-  'Review & Submit',
+  "Governance",
+  "Finance",
+  "Technical Capacity",
+  "Data Infrastructure",
+  "Stakeholder Engagement",
+  "Review & Submit",
 ];
 
 export default function MultiStepForm({
@@ -45,7 +45,7 @@ export default function MultiStepForm({
 }) {
   const [step, setStep] = useState<number>(1);
   const [formData, setFormData] = useState<Partial<MultiStepFormData>>(() => {
-    const savedData = localStorage.getItem('formData');
+    const savedData = localStorage.getItem("formData");
     return savedData ? JSON.parse(savedData) : initialData;
   });
 
@@ -53,33 +53,33 @@ export default function MultiStepForm({
     sections: number[];
     total: number;
   }>(() => {
-    const saved = localStorage.getItem('clientScores');
+    const saved = localStorage.getItem("clientScores");
     return saved ? JSON.parse(saved) : { sections: [0, 0, 0, 0, 0], total: 0 };
   });
 
   const labelToPoints = (val?: string | null) => {
     if (!val) return 0;
     const lower = String(val).toLowerCase();
-    if (lower.includes('[advanced]') || lower.endsWith('.a')) return 4;
-    if (lower.includes('[intermediate]') || lower.endsWith('.i')) return 3;
-    if (lower.includes('[emerging]') || lower.endsWith('.e')) return 2;
-    if (lower.includes('[foundational]') || lower.endsWith('.f')) return 1;
+    if (lower.includes("[advanced]") || lower.endsWith(".a")) return 3;
+    if (lower.includes("[intermediate]") || lower.endsWith(".i")) return 2;
+    if (lower.includes("[emerging]") || lower.endsWith(".e")) return 1;
+    if (lower.includes("[foundational]") || lower.endsWith(".f")) return 0;
     return 0;
   };
 
   const computeSectionScore = (
     sectionIdx: number,
-    data: Record<string, any>
+    data: Record<string, any>,
   ) => {
     const points = Object.values(data).reduce(
       (acc, v) => acc + labelToPoints(v as any),
-      0
+      0,
     );
     const nextSections = [...clientScores.sections];
     nextSections[sectionIdx] = points;
     const total = nextSections.reduce((a, b) => a + b, 0);
     const next = { sections: nextSections, total };
-    localStorage.setItem('clientScores', JSON.stringify(next));
+    localStorage.setItem("clientScores", JSON.stringify(next));
     setClientScores(next);
   };
 
@@ -96,8 +96,8 @@ export default function MultiStepForm({
 
     // store the data in local storage
     localStorage.setItem(
-      'formData',
-      JSON.stringify({ ...formData, [stepKey]: data })
+      "formData",
+      JSON.stringify({ ...formData, [stepKey]: data }),
     );
     setFormData((prev) => ({ ...prev, [stepKey]: data }));
     setStep((prev) => prev + 1);
@@ -126,12 +126,12 @@ export default function MultiStepForm({
 
     if (result.success) {
       setStep(6);
-      localStorage.removeItem('formData');
-      localStorage.removeItem('clientScores');
-      toast.success('Form submitted successfully!');
-      window.location.href = '/';
+      localStorage.removeItem("formData");
+      localStorage.removeItem("clientScores");
+      toast.success("Form submitted successfully!");
+      window.location.href = "/";
     } else {
-      alert('Submission failed: ' + result.error);
+      alert("Submission failed: " + result.error);
     }
   };
 
@@ -148,13 +148,13 @@ export default function MultiStepForm({
       </div>
 
       {step === 1 && (
-        <Step1Governance onNext={(data) => handleNext('step1', data)} />
+        <Step1Governance onNext={(data) => handleNext("step1", data)} />
       )}
 
       {step === 2 && (
         <Step2Finance
           defaultValues={formData.step2}
-          onNext={(data) => handleNext('step2', data)}
+          onNext={(data) => handleNext("step2", data)}
           onBack={handleBack}
         />
       )}
@@ -162,7 +162,7 @@ export default function MultiStepForm({
       {step === 3 && (
         <Step3Technical
           defaultValues={formData.step3}
-          onNext={(data) => handleNext('step3', data)}
+          onNext={(data) => handleNext("step3", data)}
           onBack={handleBack}
         />
       )}
@@ -170,7 +170,7 @@ export default function MultiStepForm({
       {step === 4 && (
         <Step4Infrastructure
           defaultValues={formData.step4}
-          onNext={(data) => handleNext('step4', data)}
+          onNext={(data) => handleNext("step4", data)}
           onBack={handleBack}
         />
       )}
@@ -178,7 +178,7 @@ export default function MultiStepForm({
       {step === 5 && (
         <Step5Stakeholders
           defaultValues={formData.step5}
-          onNext={(data) => handleNext('step5', data)}
+          onNext={(data) => handleNext("step5", data)}
           onBack={handleBack}
         />
       )}

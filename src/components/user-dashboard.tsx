@@ -17,14 +17,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarProvider,
@@ -68,22 +60,37 @@ export default function UserDashboard({
 
   if (totalDelegates === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Card className="max-w-xl rounded p-8 shadow w-full">
-          <CardHeader>
-            <CardTitle>No Delegates Found</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              Please add delegates to your account. Once delegates are created
-              and have submitted their forms, the dashboard will be available.
-            </p>
-            <form action="/dashboard/delegates" className="space-y-4 float-end">
-              <Button>Create Delegates</Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+            </div>
+          </header>
+          <div className="flex h-screen items-center justify-center">
+            <Card className="max-w-xl rounded p-8 shadow w-full">
+              <CardHeader>
+                <CardTitle>No Delegates Found</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Please add delegates to your account. Once delegates are
+                  created and have submitted their forms, the dashboard will be
+                  available.
+                </p>
+                <form
+                  action="/dashboard/delegates"
+                  className="space-y-4 float-end"
+                >
+                  <Button>Create Delegates</Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
     );
   }
 
@@ -95,19 +102,6 @@ export default function UserDashboard({
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
           </div>
         </header>
         {isLocked ? (
