@@ -1,94 +1,51 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Eye, Edit } from "lucide-react";
-import { getUsers, validateUser } from "@/actions/users";
-import { Input } from "./ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { CheckCircle } from "lucide-react"
 
-export async function UsersTable() {
-  // Simulate async operation
-  const res = await getUsers();
-  if ((res as any)?.success === false) {
-    return (
-      <div className="rounded-md border p-4 text-sm text-muted-foreground">
-        Failed to load users.
-      </div>
-    );
-  }
-  const users = res;
+type User = {
+  id: number
+  name: string
+  email: string
+  county: string
+  department: string
+  position: string
+  valid: boolean
+}
 
+export function UsersTable({ users }: { users: User[] }) {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border border-border">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>County</TableHead>
-            <TableHead>Department</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Delegates</TableHead>
-            <TableHead>Forms</TableHead>
-            <TableHead>Authorization</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+          <TableRow className="hover:bg-muted/50">
+            <TableHead className="text-muted-foreground">Name</TableHead>
+            <TableHead className="text-muted-foreground">Email</TableHead>
+            <TableHead className="text-muted-foreground">Department</TableHead>
+            <TableHead className="text-muted-foreground">Position</TableHead>
+            <TableHead className="text-muted-foreground">County</TableHead>
+            <TableHead className="text-muted-foreground">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.map((user: any) => (
-            <TableRow key={user.id}>
-              <TableCell className="font-medium">{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell className="capitalize">{user.county}</TableCell>
-              <TableCell>{user.department}</TableCell>
+          {users.map((user) => (
+            <TableRow key={user.id} className="hover:bg-muted/50">
+              <TableCell className="font-medium text-foreground">{user.name}</TableCell>
+              <TableCell className="text-muted-foreground">{user.email}</TableCell>
               <TableCell>
-                {user.valid ? (
-                  <Badge variant="default" className="cursor-default">
-                    Valid
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="cursor-default">
-                    Pending Validation
-                  </Badge>
-                )}
+                <Badge variant="outline" className="text-foreground border-border">
+                  {user.department}
+                </Badge>
               </TableCell>
-              <TableCell>{user._count.Delegates}</TableCell>
-              <TableCell>{user._count.FormSubmissions}</TableCell>
+              <TableCell className="text-muted-foreground">{user.position}</TableCell>
               <TableCell>
-                <a
-                  href={user.authorizationFormLink}
-                  target="_blank"
-                  className="text-blue-400 hover:underline"
-                >
-                  View Document
-                </a>
+                <Badge variant="secondary" className="capitalize">
+                  {user.county}
+                </Badge>
               </TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  {!user.valid && (
-                    <form action={validateUser}>
-                      <Input type="hidden" name="id" value={user.id} />
-                      <Button
-                        size="sm"
-                        className="bg-amber-300 hover:bg-amber-400"
-                        type="submit"
-                      >
-                        Validate
-                      </Button>
-                    </form>
-                  )}
-                  {/* <Button variant="ghost" size="sm"> */}
-                  {/*   <Eye className="h-4 w-4" /> */}
-                  {/* </Button> */}
-                  {/* <Button variant="ghost" size="sm"> */}
-                  {/*   <Edit className="h-4 w-4" /> */}
-                  {/* </Button> */}
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-primary" />
+                  <span className="text-sm text-foreground">Validated</span>
                 </div>
               </TableCell>
             </TableRow>
@@ -96,5 +53,5 @@ export async function UsersTable() {
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }
