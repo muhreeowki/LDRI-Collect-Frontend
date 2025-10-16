@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import { Progress } from "@/components/ui/progress";
 
 type Form = {
   id: string;
@@ -95,8 +96,18 @@ export function UserFormsTable({ forms }: { forms: Form[] }) {
                     {form.completed ? "Completed" : "In Progress"}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-medium text-foreground">
-                  {form.totalScore}%
+                <TableCell>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-lg font-bold text-foreground">
+                        {form.totalScore}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        / 100
+                      </span>
+                    </div>
+                    <Progress value={form.totalScore} className="h-2" />
+                  </div>
                 </TableCell>
               </TableRow>
             ))

@@ -1,18 +1,30 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { CheckCircle } from "lucide-react"
+"use client";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type User = {
-  id: number
-  name: string
-  email: string
-  county: string
-  department: string
-  position: string
-  valid: boolean
-}
+  id: number;
+  name: string;
+  email: string;
+  county: string;
+  department: string;
+  position: string;
+  valid: boolean;
+};
 
 export function UsersTable({ users }: { users: User[] }) {
+  const router = useRouter();
+
   return (
     <div className="rounded-md border border-border">
       <Table>
@@ -28,15 +40,28 @@ export function UsersTable({ users }: { users: User[] }) {
         </TableHeader>
         <TableBody>
           {users.map((user) => (
-            <TableRow key={user.id} className="hover:bg-muted/50">
-              <TableCell className="font-medium text-foreground">{user.name}</TableCell>
-              <TableCell className="text-muted-foreground">{user.email}</TableCell>
+            <TableRow
+              key={user.id}
+              className="hover:bg-muted/50 cursor-pointer"
+              onClick={() => router.push(`/admin/users/${user.id}`)}
+            >
+              <TableCell className="font-medium text-foreground">
+                {user.name}
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {user.email}
+              </TableCell>
               <TableCell>
-                <Badge variant="outline" className="text-foreground border-border">
+                <Badge
+                  variant="outline"
+                  className="text-foreground border-border"
+                >
                   {user.department}
                 </Badge>
               </TableCell>
-              <TableCell className="text-muted-foreground">{user.position}</TableCell>
+              <TableCell className="text-muted-foreground">
+                {user.position}
+              </TableCell>
               <TableCell>
                 <Badge variant="secondary" className="capitalize">
                   {user.county}
@@ -53,5 +78,5 @@ export function UsersTable({ users }: { users: User[] }) {
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

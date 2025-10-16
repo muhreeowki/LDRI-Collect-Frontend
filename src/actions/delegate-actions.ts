@@ -47,7 +47,7 @@ export async function getDelegate(formSubmissionCode: string) {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
     if (accessToken === undefined) {
-      return { success: false, error: "No User Signed In" };
+      return { success: false, delegate: null, message: "No User Signed In" };
     }
     const response = await fetch(
       `${process.env.API_URL}/delegates/${formSubmissionCode}`,
@@ -63,13 +63,17 @@ export async function getDelegate(formSubmissionCode: string) {
     if (!response.ok) {
       throw new Error(json.message || "Failed to fetch delegate");
     }
-    return { success: true, delegate: json };
+    return { success: true, delegate: json, message: "Success" };
   } catch (error) {
     console.error("Error fetching delegate:", error);
     if (error instanceof Error) {
-      return { success: false, error: error.message };
+      return { success: false, delegate: null, message: error.message };
     }
-    return { success: false, error: "An unexpected error occurred" };
+    return {
+      success: false,
+      delegate: null,
+      message: "An unexpected error occurred",
+    };
   }
 }
 

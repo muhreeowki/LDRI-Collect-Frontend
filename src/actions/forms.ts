@@ -75,6 +75,36 @@ export async function getFormById(id: string) {
       return { success: false, form: null, message: "Not Authorized" };
     }
 
+    const response = await fetch(`${process.env.API_URL}/forms/user/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const jsonResp = await response.json();
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch form");
+    }
+
+    return { success: true, form: jsonResp, message: "Success" };
+  } catch (err: any) {
+    console.error(err);
+    return { success: false, form: null, message: err.message };
+  }
+}
+
+export async function getAdminFormById(id: string) {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    const isAdmin = cookieStore.get("isAdmin")?.value === "true";
+    if (!accessToken || !isAdmin) {
+      return { success: false, error: "Not Authorized" };
+    }
+
     const response = await fetch(`${process.env.API_URL}/forms/${id}`, {
       method: "GET",
       headers: {
