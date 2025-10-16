@@ -257,7 +257,7 @@ export default function LandingPage() {
               <form action="/login">
                 <Button
                   size="lg"
-                  variant="secondary"
+                  variant="outline"
                   className="text-base px-8 py-6 h-auto bg-transparent text-white border-white hover:bg-white/10"
                 >
                   Login to Dashboard
