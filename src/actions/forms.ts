@@ -1,27 +1,27 @@
-'use server';
+"use server";
 
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
 export async function submitBridgeForm(data: any) {
   try {
     const cookieStore = await cookies();
-    const delegateJSON = cookieStore.get('delegate')?.value;
+    const delegateJSON = cookieStore.get("delegate")?.value;
     const delegate = delegateJSON ? JSON.parse(delegateJSON) : undefined;
     if (delegate === undefined) {
-      return { success: false, error: 'No User Signed In' };
+      return { success: false, error: "No User Signed In" };
     }
-    console.log('data', data);
+    console.log("data", data);
 
     const response = await fetch(
       `${process.env.API_URL}/forms/${delegate.formSubmissionCode}`,
       {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      }
+      },
     );
 
-    console.log('Response:', await response.json());
+    console.log("Response:", await response.json());
 
     if (!response.ok) {
       throw new Error(`Failed to submit: ${response.statusText}`);
@@ -34,51 +34,20 @@ export async function submitBridgeForm(data: any) {
   }
 }
 
-export async function getAllForms() {
-  try {
-    const cookieStore = await cookies();
-    const isAdmin = cookieStore.get('isAdmin')?.value === 'true';
-    const accessToken = cookieStore.get('accessToken')?.value;
-    if (accessToken === undefined || !isAdmin) {
-      return { success: false, error: 'Not Authorized' };
-    }
-    const response = await fetch(`${process.env.API_URL}/forms`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const jsonResp = await response.json();
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch users');
-    }
-
-    console.log('Response:', jsonResp);
-
-    return jsonResp;
-  } catch (err: any) {
-    console.error(err);
-    return { success: false, error: err.message };
-  }
-}
-
 export async function getUserForms() {
   try {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
+    const accessToken = cookieStore.get("accessToken")?.value;
 
-    console.log('accessToken', accessToken);
+    console.log("accessToken", accessToken);
 
     if (accessToken === undefined) {
-      return { success: false, error: 'Not Authorized' };
+      return { success: false, forms: null, message: "Not Authorized" };
     }
     const response = await fetch(`${process.env.API_URL}/users/forms`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
@@ -87,29 +56,29 @@ export async function getUserForms() {
     console.log(jsonResp);
 
     if (!response.ok) {
-      throw new Error('Failed to fetch users');
+      throw new Error("Failed to fetch users");
     }
 
-    return { success: true, forms: jsonResp };
+    return { success: true, forms: jsonResp, message: "Success" };
   } catch (err: any) {
     console.error(err);
-    return { success: false, error: err.message };
+    return { success: false, forms: null, message: err.message };
   }
 }
 
 export async function getFormById(id: string) {
   try {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
+    const accessToken = cookieStore.get("accessToken")?.value;
 
     if (accessToken === undefined) {
-      return { success: false, error: 'Not Authorized' };
+      return { success: false, form: null, message: "Not Authorized" };
     }
 
     const response = await fetch(`${process.env.API_URL}/forms/${id}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
@@ -117,12 +86,12 @@ export async function getFormById(id: string) {
     const jsonResp = await response.json();
 
     if (!response.ok) {
-      throw new Error('Failed to fetch form');
+      throw new Error("Failed to fetch form");
     }
 
-    return { success: true, form: jsonResp };
+    return { success: true, form: jsonResp, message: "Success" };
   } catch (err: any) {
     console.error(err);
-    return { success: false, error: err.message };
+    return { success: false, form: null, message: err.message };
   }
 }

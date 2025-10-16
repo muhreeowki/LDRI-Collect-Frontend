@@ -12,7 +12,6 @@ export async function createDelegates(formData: FormData) {
     if (accessToken === undefined) {
       return { success: false, error: "No User Signed In" };
     }
-    console.log("Access Token:", accessToken);
     // Extract the delegates data from FormData
     const rawData = formData.get("delegates");
     if (!rawData) {
@@ -20,7 +19,6 @@ export async function createDelegates(formData: FormData) {
     }
     const delegates = JSON.parse(rawData as string);
     const validatedData = delegateListSchema.parse({ delegates });
-    console.log("Creating delegates:", validatedData.delegates);
     const response = await fetch(`${process.env.API_URL}/delegates/many`, {
       method: "POST",
       headers: {
@@ -33,7 +31,6 @@ export async function createDelegates(formData: FormData) {
     if (!response.ok) {
       throw new Error(json.message || "Failed to create delegates");
     }
-    // TODO: You might want to redirect to a success page or return success response
     revalidatePath("/delegates");
     return { success: true, message: "Delegates created successfully!" };
   } catch (error) {
@@ -47,12 +44,18 @@ export async function createDelegates(formData: FormData) {
 
 export async function getDelegate(formSubmissionCode: string) {
   try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    if (accessToken === undefined) {
+      return { success: false, error: "No User Signed In" };
+    }
     const response = await fetch(
       `${process.env.API_URL}/delegates/${formSubmissionCode}`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
       },
     );
@@ -77,7 +80,6 @@ export async function getUsersDelegates() {
     if (accessToken === undefined) {
       return { success: false, error: "No User Signed In" };
     }
-    console.log("Access Token:", accessToken);
 
     const response = await fetch(`${process.env.API_URL}/users/delegates`, {
       method: "GET",
@@ -105,6 +107,10 @@ export async function getUsersDelegates() {
 
 export async function verifyDelegate(formData: FormData) {
   const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  if (accessToken === undefined) {
+    return { success: false, error: "No User Signed In" };
+  }
 
   const data = { formSubmissionCode: formData.get("formSubmissionCode") };
 
@@ -112,6 +118,7 @@ export async function verifyDelegate(formData: FormData) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(data),
   });
@@ -136,4 +143,37 @@ export async function verifyDelegate(formData: FormData) {
     });
   } // Set the access token cookie with a long expiration time
   return { success: true, message: "Delegate verified successfully!" };
+}
+
+export async function deleteDelegate(formSubmissionCode: string) {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    if (accessToken === undefined) {
+      return { success: false, error: "No User Signed In" };
+    }
+    const response = await fetch(
+      `${process.env.API_URL}/delegates/${formSubmissionCode}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    const json = await response.json();
+    console.log("Delete response:", json);
+    if (!response.ok) {
+      throw new Error(json.message || "Failed to fetch delegate");
+    }
+    revalidatePath("/delegates");
+    return { success: true, message: "Delegate deleted successfully" };
+  } catch (error) {
+    console.error("Error fetching delegate:", error);
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: "An unexpected error occurred" };
+  }
 }

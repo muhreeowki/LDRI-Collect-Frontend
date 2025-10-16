@@ -1,136 +1,74 @@
-'use server';
+"use server";
 
-import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
-export async function getUsers() {
+export async function getUserProfile() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
+  const accessToken = cookieStore.get("accessToken")?.value;
   if (accessToken === undefined) {
-    return { success: false, error: 'No User Signed In' };
+    return { success: false, profile: null, message: "No User Signed In" };
   }
-
-  const response = await fetch(`${process.env.API_URL}/users`, {
-    method: 'GET',
+  const response = await fetch(`${process.env.API_URL}/users/profile`, {
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
   });
   const jsonResp = await response.json();
-
   if (!response.ok) {
-    throw new Error('Failed to fetch users');
+    return {
+      success: false,
+      profile: null,
+      message: "Failed to fetch dashboard data",
+    };
   }
-
-  console.log('Response:', jsonResp);
-
-  for (const user of jsonResp) {
-    // Convert valid field to boolean
-    user.valid = user.valid === 'true' || user.valid === true;
-    // Convert _count fields to numbers
-    user._count.Delegates = Number(user._count.Delegates);
-    user._count.FormSubmissions = Number(user._count.FormSubmissions);
-  }
-
-  return jsonResp;
-}
-
-export async function validateUser(form: FormData) {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
-  if (accessToken === undefined) {
-    return { success: false, error: 'No User Signed In' };
-  }
-  const userId = form.get('id');
-
-  console.log('accessToken: ', accessToken);
-  const response = await fetch(
-    `${process.env.API_URL}/users/validate/${userId}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  console.log('Response:', response);
-  const jsonResp = await response.json();
-  console.log('JsonResp:', jsonResp);
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch users');
-  }
-
-  revalidatePath('/admin');
-  return jsonResp;
+  return { success: true, profile: jsonResp, message: "Success" };
 }
 
 export async function getUserDashboard() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
+  const accessToken = cookieStore.get("accessToken")?.value;
   if (accessToken === undefined) {
-    return { success: false, error: 'No User Signed In' };
+    return {
+      success: false,
+      summary: null,
+      error: "No User Signed In",
+    };
   }
   const response = await fetch(`${process.env.API_URL}/users/dashboard`, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
   });
   const jsonResp = await response.json();
   if (!response.ok) {
-    return { success: false, error: 'Failed to fetch dashboard data' };
+    return {
+      success: false,
+      summary: null,
+      message: "Failed to fetch dashboard data",
+    };
   }
-  return { success: true, summary: jsonResp };
+  return { success: true, summary: jsonResp, message: "Success" };
 }
 
-export async function getAdminStats() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
-  const isAdmin = cookieStore.get('isAdmin')?.value === 'true';
-  if (!accessToken || !isAdmin) {
-    return { success: false, error: 'Not Authorized' };
-  }
-  // Fetch users
-  const [usersResp, formsResp] = await Promise.all([
-    fetch(`${process.env.API_URL}/users`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }),
-    fetch(`${process.env.API_URL}/forms`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }),
-  ]);
+// export async function getDashboardStats() {
+//   return {
+//     totalUsers: 24,
+//     pendingUsers: 2,
+//     totalForms: 156,
+//     completedForms: 142,
+//     totalDelegates: 48,
+//     avgFormScore: 78.5,
+//   };
+// }
 
-  const [usersJson, formsJson] = await Promise.all([
-    usersResp.json(),
-    formsResp.json(),
-  ]);
-
-  if (!usersResp.ok || !formsResp.ok) {
-    return { success: false, error: 'Failed to fetch stats' };
-  }
-
-  const totalUsers = usersJson.length ?? 0;
-  const validUsers = usersJson.filter((u: any) => u.valid === true || u.valid === 'true').length;
-  const totalDelegates = usersJson.reduce(
-    (sum: number, u: any) => sum + (Number(u?._count?.Delegates ?? 0) || 0),
-    0
-  );
-  const totalForms = formsJson.length ?? 0;
-
-  return {
-    success: true,
-    stats: { totalUsers, validUsers, totalDelegates, totalForms },
-  };
-}
+// export async function validateUser(userId: number) {
+//   // This would call your backend to validate the user
+//   console.log("[v0] Validating user:", userId)
+//   // Simulate API call
+//   await new Promise((resolve) => setTimeout(resolve, 500))
+//   return { success: true, message: "User validated successfully" }
+// }
