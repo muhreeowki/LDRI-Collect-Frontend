@@ -8,7 +8,6 @@ const successGateRoutes = ["/onboarding/success"];
 const logoutRoute = "/logout";
 
 export default async function middleware(req: NextRequest) {
-  console.log("Middleware running for:", req.nextUrl.pathname);
   // 2. Check if the current route is protected or public
   const path = req.nextUrl.pathname;
   const isProtectedUserRoute = path.startsWith(protectedUserPrefix);
