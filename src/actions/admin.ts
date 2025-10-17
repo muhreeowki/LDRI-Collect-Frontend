@@ -175,13 +175,13 @@ export async function getDelegates() {
 }
 
 export async function getForms() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  const isAdmin = cookieStore.get("isAdmin")?.value === "true";
+  if (!accessToken || !isAdmin) {
+    return { success: false, forms: null, message: "Not Authorized" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-    const isAdmin = cookieStore.get("isAdmin")?.value === "true";
-    if (!accessToken || !isAdmin) {
-      return { success: false, forms: null, message: "Not Authorized" };
-    }
     const response = await fetch(`${process.env.API_URL}/forms`, {
       method: "GET",
       headers: {

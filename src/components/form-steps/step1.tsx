@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -10,29 +10,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 // --- SCHEMA ---
 const Step1Schema = z.object({
-  Q_1_1: z.string({ required_error: 'Please select an option.' }),
+  Q_1_1: z.string({ required_error: "Please select an option." }),
   Q_1_2: z.string().optional(),
   Q_1_3: z.string().optional(),
   Q_1_4: z.string({
-    required_error: 'This field is required.',
+    required_error: "This field is required.",
   }),
-  Q_1_5: z.string({ required_error: 'This field is required.' }),
+  Q_1_5: z.string({ required_error: "This field is required." }),
   Q_1_5_a: z.string().optional(),
   Q_1_6: z.string().optional(),
-  Q_1_7: z.string({ required_error: 'This field is required.' }),
+  Q_1_7: z.string({ required_error: "This field is required." }),
 });
 
 export type Step1Data = z.infer<typeof Step1Schema>;
@@ -53,8 +53,8 @@ Step1Props) {
     defaultValues: defaultValues || {},
   });
 
-  const watchQ1_1 = form.watch('Q_1_1');
-  const watchQ1_5 = form.watch('Q_1_5');
+  const watchQ1_1 = form.watch("Q_1_1");
+  const watchQ1_5 = form.watch("Q_1_5");
 
   const onSubmit = (data: Step1Data) => {
     onNext(data);
@@ -97,7 +97,7 @@ Step1Props) {
         />
 
         {/* Q_1_2 - conditional */}
-        {watchQ1_1 === 'a.1.1.i' && (
+        {watchQ1_1 === "a.1.1.i" && (
           <FormField
             control={form.control}
             name="Q_1_2"
@@ -206,7 +206,7 @@ Step1Props) {
         />
 
         {/* Q_1_5_a - optional text */}
-        {watchQ1_5 === '1' && (
+        {watchQ1_5 === "1" && (
           <FormField
             control={form.control}
             name="Q_1_5_a"
@@ -226,7 +226,7 @@ Step1Props) {
         )}
 
         {/* Q_1_6 - conditional */}
-        {watchQ1_5 === '1' && (
+        {watchQ1_5 === "1" && (
           <FormField
             control={form.control}
             name="Q_1_6"
@@ -295,7 +295,9 @@ Step1Props) {
         />
 
         <div className="flex justify-end">
-          <Button type="submit">Next</Button>
+          <Button size={"lg"} type="submit">
+            Next
+          </Button>
         </div>
       </form>
     </Form>

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormField,
@@ -10,25 +10,25 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 const Step5Schema = z.object({
-  Q_5_1: z.string({ required_error: 'Required' }),
-  Q_5_2: z.string({ required_error: 'Required' }),
+  Q_5_1: z.string({ required_error: "Required" }),
+  Q_5_2: z.string({ required_error: "Required" }),
   Q_5_2_a: z.string().optional(),
-  Q_5_3: z.string({ required_error: 'Required' }),
+  Q_5_3: z.string({ required_error: "Required" }),
   // Q_5_3_a: z.string().optional(),
-  Q_5_4: z.string({ required_error: 'Required' }),
-  Q_5_5: z.string({ required_error: 'Required' }),
+  Q_5_4: z.string({ required_error: "Required" }),
+  Q_5_5: z.string({ required_error: "Required" }),
 });
 
 export type Step5Data = z.infer<typeof Step5Schema>;
@@ -261,10 +261,12 @@ export default function Step5Stakeholders({
         />
 
         <div className="flex justify-between">
-          <Button variant="outline" type="button" onClick={onBack}>
+          <Button size={"lg"} variant="outline" type="button" onClick={onBack}>
             Back
           </Button>
-          <Button type="submit">Next</Button>
+          <Button size={"lg"} type="submit">
+            Next
+          </Button>
         </div>
       </form>
     </Form>

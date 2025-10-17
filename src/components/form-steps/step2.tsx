@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormField,
@@ -10,24 +10,24 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 const Step2Schema = z.object({
-  Q_2_1: z.string({ required_error: 'Required' }),
+  Q_2_1: z.string({ required_error: "Required" }),
   Q_2_2: z.string().optional(),
   Q_2_2_a: z.string().optional(),
-  Q_2_3: z.string({ required_error: 'Required' }),
+  Q_2_3: z.string({ required_error: "Required" }),
   Q_2_3_a: z.string().optional(),
-  Q_2_4: z.string({ required_error: 'Required' }),
+  Q_2_4: z.string({ required_error: "Required" }),
   Q_2_4_a: z.string().optional(),
 });
 
@@ -49,7 +49,7 @@ export default function Step2Finance({
     defaultValues: defaultValues || {},
   });
 
-  const watchQ21 = form.watch('Q_2_1');
+  const watchQ21 = form.watch("Q_2_1");
 
   const onSubmit = (data: Step2Data) => {
     onNext(data);
@@ -86,7 +86,7 @@ export default function Step2Finance({
         />
 
         {/* Q_2_2 - conditional */}
-        {watchQ21 === '1' && (
+        {watchQ21 === "1" && (
           <FormField
             control={form.control}
             name="Q_2_2"
@@ -121,7 +121,7 @@ export default function Step2Finance({
         )}
 
         {/* Q_2_2_a - optional */}
-        {watchQ21 === '1' && (
+        {watchQ21 === "1" && (
           <FormField
             control={form.control}
             name="Q_2_2_a"
@@ -243,10 +243,12 @@ export default function Step2Finance({
         />
 
         <div className="flex justify-between">
-          <Button variant="outline" type="button" onClick={onBack}>
+          <Button size={"lg"} variant="outline" type="button" onClick={onBack}>
             Back
           </Button>
-          <Button type="submit">Next</Button>
+          <Button size={"lg"} type="submit">
+            Next
+          </Button>
         </div>
       </form>
     </Form>

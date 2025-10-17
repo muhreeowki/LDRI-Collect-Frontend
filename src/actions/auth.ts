@@ -54,11 +54,13 @@ export async function login(form: FormData) {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
   });
   cookieStore.set("isAdmin", json.isAdmin ? "true" : "false", {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
   });
 
   if (json.isAdmin === true) {
@@ -66,4 +68,11 @@ export async function login(form: FormData) {
   } else {
     redirect("/dashboard");
   }
+}
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete({ name: "accessToken", path: "/" });
+  cookieStore.delete({ name: "isAdmin", path: "/" });
+  redirect("/");
 }

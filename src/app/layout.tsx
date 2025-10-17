@@ -7,6 +7,7 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import { Toaster } from "sonner";
 import QueryProvider from "@/components/providers/query-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -14,13 +15,24 @@ const font = Poppins({
 });
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`scroll-smooth antialiased ${font.className}`}>
+    <html
+      lang="en"
+      className={`scroll-smooth antialiased ${font.className}`}
+      suppressHydrationWarning
+    >
       <head></head>
       <body className="selection:bg-zinc-800 selection:text-zinc-100 relative">
-        <QueryProvider>
-          <RootProvider>{children}</RootProvider>
-        </QueryProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            <RootProvider>{children}</RootProvider>
+          </QueryProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

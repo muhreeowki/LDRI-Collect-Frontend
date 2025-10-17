@@ -6,12 +6,12 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 export async function createDelegates(formData: FormData) {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  if (accessToken === undefined) {
+    return { success: false, error: "No User Signed In" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-    if (accessToken === undefined) {
-      return { success: false, error: "No User Signed In" };
-    }
     // Extract the delegates data from FormData
     const rawData = formData.get("delegates");
     if (!rawData) {
@@ -43,12 +43,12 @@ export async function createDelegates(formData: FormData) {
 }
 
 export async function getDelegate(formSubmissionCode: string) {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  if (accessToken === undefined) {
+    return { success: false, delegate: null, message: "No User Signed In" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-    if (accessToken === undefined) {
-      return { success: false, delegate: null, message: "No User Signed In" };
-    }
     const response = await fetch(
       `${process.env.API_URL}/delegates/${formSubmissionCode}`,
       {
@@ -78,13 +78,12 @@ export async function getDelegate(formSubmissionCode: string) {
 }
 
 export async function getUsersDelegates() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  if (accessToken === undefined) {
+    return { success: false, delegates: null, message: "No User Signed In" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-    if (accessToken === undefined) {
-      return { success: false, delegates: null, message: "No User Signed In" };
-    }
-
     const response = await fetch(`${process.env.API_URL}/users/delegates`, {
       method: "GET",
       headers: {
@@ -147,19 +146,19 @@ export async function verifyDelegate(formData: FormData) {
       httpOnly: true,
       sameSite: "lax",
       path: "/",
-      expires: new Date(Date.now() + 60 * 60 * 10000000),
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     });
   } // Set the access token cookie with a long expiration time
   return { success: true, message: "Delegate verified successfully!" };
 }
 
 export async function deleteDelegate(formSubmissionCode: string) {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  if (accessToken === undefined) {
+    return { success: false, error: "No User Signed In" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-    if (accessToken === undefined) {
-      return { success: false, error: "No User Signed In" };
-    }
     const response = await fetch(
       `${process.env.API_URL}/delegates/${formSubmissionCode}`,
       {

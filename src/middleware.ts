@@ -5,7 +5,7 @@ const protectedUserPrefix = "/dashboard";
 const protectedAdminPrefix = "/admin";
 const publicRoutes = ["/login", "/onboarding", "/"];
 const successGateRoutes = ["/onboarding/success"];
-const logoutRoute = "/logout";
+// const logoutRoute = "/logout";
 
 export default async function middleware(req: NextRequest) {
   // 2. Check if the current route is protected or public
@@ -20,13 +20,14 @@ export default async function middleware(req: NextRequest) {
   const success = req.cookies.get("ldriSuccess")?.value === "true";
 
   // Check for Logout
-  if (path === logoutRoute) {
-    const response = NextResponse.redirect(new URL("/", req.nextUrl));
-    response.cookies.delete({ name: "accessToken", path: "/" });
-    response.cookies.delete({ name: "isAdmin", path: "/" });
-    response.cookies.delete({ name: "ldriSuccess", path: "/" });
-    return response;
-  }
+  // if (path === logoutRoute) {
+  //   console.log("logging out");
+  //   const response = NextResponse.redirect(new URL("/", req.nextUrl));
+  //   response.cookies.delete({ name: "accessToken", path: "/" });
+  //   response.cookies.delete({ name: "isAdmin", path: "/" });
+  //   response.cookies.delete({ name: "ldriSuccess", path: "/" });
+  //   return response;
+  // }
 
   // 4. Redirect logged in users to dashboard or admin, otherwise redirect to login
   if ((isProtectedUserRoute || isProtectedAdminRoute) && token) {
@@ -63,6 +64,6 @@ export const config = {
     "/onboarding/success",
     "/dashboard/:path*",
     "/admin/:path*",
-    "/logout",
+    // "/logout",
   ],
 };

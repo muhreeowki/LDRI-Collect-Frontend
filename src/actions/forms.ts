@@ -3,15 +3,13 @@
 import { cookies } from "next/headers";
 
 export async function submitBridgeForm(data: any) {
+  const cookieStore = await cookies();
+  const delegateJSON = cookieStore.get("delegate")?.value;
+  const delegate = delegateJSON ? JSON.parse(delegateJSON) : undefined;
+  if (delegate === undefined) {
+    return { success: false, error: "No User Signed In" };
+  }
   try {
-    const cookieStore = await cookies();
-    const delegateJSON = cookieStore.get("delegate")?.value;
-    const delegate = delegateJSON ? JSON.parse(delegateJSON) : undefined;
-    if (delegate === undefined) {
-      return { success: false, error: "No User Signed In" };
-    }
-    console.log("data", data);
-
     const response = await fetch(
       `${process.env.API_URL}/forms/${delegate.formSubmissionCode}`,
       {
@@ -35,15 +33,12 @@ export async function submitBridgeForm(data: any) {
 }
 
 export async function getUserForms() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  if (accessToken === undefined) {
+    return { success: false, forms: null, message: "Not Authorized" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-
-    console.log("accessToken", accessToken);
-
-    if (accessToken === undefined) {
-      return { success: false, forms: null, message: "Not Authorized" };
-    }
     const response = await fetch(`${process.env.API_URL}/users/forms`, {
       method: "GET",
       headers: {
@@ -67,14 +62,12 @@ export async function getUserForms() {
 }
 
 export async function getFormById(id: string) {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  if (accessToken === undefined) {
+    return { success: false, form: null, message: "Not Authorized" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-
-    if (accessToken === undefined) {
-      return { success: false, form: null, message: "Not Authorized" };
-    }
-
     const response = await fetch(`${process.env.API_URL}/forms/user/${id}`, {
       method: "GET",
       headers: {
@@ -97,14 +90,13 @@ export async function getFormById(id: string) {
 }
 
 export async function getAdminFormById(id: string) {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  const isAdmin = cookieStore.get("isAdmin")?.value === "true";
+  if (!accessToken || !isAdmin) {
+    return { success: false, error: "Not Authorized" };
+  }
   try {
-    const cookieStore = await cookies();
-    const accessToken = cookieStore.get("accessToken")?.value;
-    const isAdmin = cookieStore.get("isAdmin")?.value === "true";
-    if (!accessToken || !isAdmin) {
-      return { success: false, error: "Not Authorized" };
-    }
-
     const response = await fetch(`${process.env.API_URL}/forms/${id}`, {
       method: "GET",
       headers: {

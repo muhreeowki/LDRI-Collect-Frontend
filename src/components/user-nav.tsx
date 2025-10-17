@@ -4,6 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, Users, FileText, LogOut, User } from "lucide-react";
+import { ModeToggle } from "./dark-mode-toggle";
+import { Button } from "./ui/button";
+import { logout } from "@/actions/auth";
 
 const navItems = [
   {
@@ -55,14 +58,16 @@ export function UserNav() {
         })}
       </div>
 
-      <div className="p-4 border-t border-border">
-        <Link
-          href="/logout"
+      <div className="flex items-center justify-between p-4 border-t border-border">
+        <Button
           className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors text-muted-foreground hover:text-foreground hover:bg-secondary"
+          onClick={logout}
+          variant="outline"
         >
           <LogOut className="h-5 w-5" />
           Logout
-        </Link>
+        </Button>
+        <ModeToggle />
       </div>
     </nav>
   );
