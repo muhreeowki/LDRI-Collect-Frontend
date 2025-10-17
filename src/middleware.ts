@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 // 1. Specify protected and public routes
 const protectedUserPrefix = "/dashboard";
 const protectedAdminPrefix = "/admin";
-const publicRoutes = ["/login", "/onboarding", "/"];
+const publicRoutes = ["/login", "/onboarding"];
 const successGateRoutes = ["/onboarding/success"];
 // const logoutRoute = "/logout";
 
@@ -58,7 +58,6 @@ export default async function middleware(req: NextRequest) {
 // Routes Middleware should not run on
 export const config = {
   matcher: [
-    "/",
     "/login",
     "/onboarding",
     "/onboarding/success",
