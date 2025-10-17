@@ -9,7 +9,15 @@ import {
 } from "@/components/ui/card";
 
 export default async function FormSubmissionsPage() {
-  const forms = await getForms();
+  const { forms, message, success } = await getForms();
+  if (!success || !forms) {
+    return (
+      <div className="rounded-md border p-4 text-sm text-muted-foreground">
+        Failed to load forms.{" "}
+        {message && <div className="text-red-400">Error: {message}</div>}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

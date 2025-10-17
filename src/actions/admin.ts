@@ -180,7 +180,7 @@ export async function getForms() {
     const accessToken = cookieStore.get("accessToken")?.value;
     const isAdmin = cookieStore.get("isAdmin")?.value === "true";
     if (!accessToken || !isAdmin) {
-      return { success: false, error: "Not Authorized" };
+      return { success: false, forms: null, message: "Not Authorized" };
     }
     const response = await fetch(`${process.env.API_URL}/forms`, {
       method: "GET",
@@ -198,9 +198,9 @@ export async function getForms() {
 
     console.log("Response:", jsonResp);
 
-    return jsonResp;
+    return { success: true, forms: jsonResp, message: "Success" };
   } catch (err: any) {
     console.error(err);
-    return { success: false, error: err.message };
+    return { success: false, forms: null, message: err.message };
   }
 }

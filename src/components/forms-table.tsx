@@ -8,17 +8,17 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Download } from "lucide-react";
-import { getAllForms } from "@/actions/forms";
+import { Eye } from "lucide-react";
+import { getForms } from "@/actions/admin";
 import Link from "next/link";
 
 export async function FormsTable() {
-  // Simulate async operation
-  const forms = await getAllForms();
-  if ((forms as any)?.success === false) {
+  const { forms, message, success } = await getForms();
+  if (!success || !forms) {
     return (
       <div className="rounded-md border p-4 text-sm text-muted-foreground">
-        Failed to load forms.
+        Failed to load forms.{" "}
+        {message && <div className="text-red-400">Error: {message}</div>}
       </div>
     );
   }

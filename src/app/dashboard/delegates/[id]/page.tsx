@@ -25,10 +25,10 @@ export default async function DelegateDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { success, delegate, error } = await getDelegate(params.id);
+  const { success, delegate, message } = await getDelegate(params.id);
 
   if (!success || !delegate) {
-    console.log("Error fetching delegate:", error);
+    console.log("Error fetching delegate:", message);
     notFound();
   }
 
