@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type User = {
@@ -43,7 +43,11 @@ export function UsersTable({ users }: { users: User[] }) {
             <TableRow
               key={user.id}
               className="hover:bg-muted/50 cursor-pointer"
-              onClick={() => router.push(`/admin/users/${user.id}`)}
+              onClick={() => {
+                user.valid
+                  ? router.push(`/admin/users/${user.id}`)
+                  : router.push(`/admin/validation`);
+              }}
             >
               <TableCell className="font-medium text-foreground">
                 {user.name}
@@ -68,10 +72,17 @@ export function UsersTable({ users }: { users: User[] }) {
                 </Badge>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-primary" />
-                  <span className="text-sm text-foreground">Validated</span>
-                </div>
+                {user.valid ? (
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-sm text-foreground">Validated</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <XCircle className="h-4 w-4 text-red-500" />
+                    <span className="text-sm text-red-500">Pending</span>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
           ))}
