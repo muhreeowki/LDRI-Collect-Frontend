@@ -53,7 +53,7 @@ export function DelegatesTable({ delegates }: { delegates: Delegate[] }) {
       setSelectedDelegate(null);
       router.refresh();
     } catch (error) {
-      console.error("[v0] Error deleting delegate:", error);
+      console.error("Error deleting delegate:", error);
     } finally {
       setIsDeleting(false);
     }

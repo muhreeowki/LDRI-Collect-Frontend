@@ -21,7 +21,7 @@ export default async function FormDetailPage({
   const { form, message, success } = await getFormById(params.id);
 
   if (!success || !form) {
-    console.log("Error fetching form:", message);
+    console.error("Error fetching form:", message);
     notFound();
   }
 

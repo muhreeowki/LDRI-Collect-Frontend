@@ -44,8 +44,6 @@ export default async function AdminUserDetailPage({
     notFound();
   }
 
-  console.log(user);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">

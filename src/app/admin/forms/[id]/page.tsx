@@ -21,11 +21,9 @@ export default async function AdminFormDetailPage({
   const { form, message, success } = await getAdminFormById(params.id);
 
   if (!success || !form) {
-    console.log("Error fetching form:", message);
+    console.error("Error fetching form:", message);
     notFound();
   }
-
-  console.log("Console Log of new form: ", form);
 
   return (
     <div className="space-y-6">

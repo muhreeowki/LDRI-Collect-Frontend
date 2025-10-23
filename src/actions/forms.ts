@@ -19,15 +19,13 @@ export async function submitBridgeForm(data: any) {
       },
     );
 
-    console.log("Response:", await response.json());
-
     if (!response.ok) {
       throw new Error(`Failed to submit: ${response.statusText}`);
     }
 
     return { success: true };
   } catch (err: any) {
-    console.error(err);
+    console.error("Error submitting bridge form:", err);
     return { success: false, error: err.message };
   }
 }
@@ -48,7 +46,6 @@ export async function getUserForms() {
     });
 
     const jsonResp = await response.json();
-    console.log(jsonResp);
 
     if (!response.ok) {
       throw new Error("Failed to fetch users");
@@ -56,7 +53,7 @@ export async function getUserForms() {
 
     return { success: true, forms: jsonResp, message: "Success" };
   } catch (err: any) {
-    console.error(err);
+    console.error("Error fetching user forms:", err);
     return { success: false, forms: null, message: err.message };
   }
 }
@@ -84,7 +81,7 @@ export async function getFormById(id: string) {
 
     return { success: true, form: jsonResp, message: "Success" };
   } catch (err: any) {
-    console.error(err);
+    console.error("Error fetching form by ID:", err);
     return { success: false, form: null, message: err.message };
   }
 }
@@ -113,7 +110,7 @@ export async function getAdminFormById(id: string) {
 
     return { success: true, form: jsonResp, message: "Success" };
   } catch (err: any) {
-    console.error(err);
+    console.error("Error fetching admin form by ID:", err);
     return { success: false, form: null, message: err.message };
   }
 }

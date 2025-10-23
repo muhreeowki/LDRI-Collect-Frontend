@@ -19,16 +19,6 @@ export default async function middleware(req: NextRequest) {
   const isAdmin = req.cookies.get("isAdmin")?.value === "true";
   const success = req.cookies.get("ldriSuccess")?.value === "true";
 
-  // Check for Logout
-  // if (path === logoutRoute) {
-  //   console.log("logging out");
-  //   const response = NextResponse.redirect(new URL("/", req.nextUrl));
-  //   response.cookies.delete({ name: "accessToken", path: "/" });
-  //   response.cookies.delete({ name: "isAdmin", path: "/" });
-  //   response.cookies.delete({ name: "ldriSuccess", path: "/" });
-  //   return response;
-  // }
-
   // 4. Redirect logged in users to dashboard or admin, otherwise redirect to login
   if ((isProtectedUserRoute || isProtectedAdminRoute) && token) {
     if (isAdmin && !path.startsWith("/admin")) {

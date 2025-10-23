@@ -140,7 +140,6 @@ export async function verifyDelegate(formData: FormData) {
     };
   }
 
-  console.log("Delegate verification response:", json);
   if (json.formSubmissionCode != undefined) {
     cookieStore.set("delegate", JSON.stringify(json), {
       httpOnly: true,
@@ -170,7 +169,6 @@ export async function deleteDelegate(formSubmissionCode: string) {
       },
     );
     const json = await response.json();
-    console.log("Delete response:", json);
     if (!response.ok) {
       throw new Error(json.message || "Failed to fetch delegate");
     }

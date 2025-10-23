@@ -16,7 +16,6 @@ export async function onboard(form: FormData) {
     password: form.get("password") as string,
     authorizationFormLink: form.get("authorizationFormLink") as string,
   });
-  console.log(data);
 
   const response = await fetch(`${process.env.API_URL}/users`, {
     method: "POST",
@@ -44,8 +43,8 @@ export async function login(form: FormData) {
       "Content-Type": "application/json",
     },
   });
-  console.log(response);
   if (response.status !== 200) {
+    console.error("Login failed with status:", response.status);
     return { success: false, error: "Invalid credentials" };
   }
   const json = await response.json();

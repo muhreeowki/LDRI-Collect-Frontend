@@ -23,8 +23,6 @@ export async function getPendingUsers() {
     throw new Error("Failed to fetch users");
   }
 
-  console.log("Response:", jsonResp);
-
   for (const user of jsonResp) {
     // Convert valid field to boolean
     user.valid = user.valid === "true" || user.valid === true;
@@ -110,8 +108,6 @@ export async function getUsers() {
     throw new Error("Failed to fetch users");
   }
 
-  console.log("Response:", jsonResp);
-
   for (const user of jsonResp) {
     // Convert valid field to boolean
     user.valid = user.valid === "true" || user.valid === true;
@@ -131,7 +127,6 @@ export async function validateUser(userId: number) {
     return { success: false, error: "Not Authorized" };
   }
 
-  console.log("accessToken: ", accessToken);
   const response = await fetch(
     `${process.env.API_URL}/users/validate/${userId}`,
     {
@@ -142,9 +137,7 @@ export async function validateUser(userId: number) {
       },
     },
   );
-  console.log("Response:", response);
   const jsonResp = await response.json();
-  console.log("JsonResp:", jsonResp);
 
   if (!response.ok) {
     throw new Error("Failed to fetch users");
@@ -179,16 +172,6 @@ export async function getDelegates() {
     throw new Error("Failed to fetch users");
   }
 
-  console.log("Response:", jsonResp);
-
-  // for (const user of jsonResp) {
-  //   // Convert valid field to boolean
-  //   user.valid = user.valid === "true" || user.valid === true;
-  //   // Convert _count fields to numbers
-  //   user._count.Delegates = Number(user._count.Delegates);
-  //   user._count.FormSubmissions = Number(user._count.FormSubmissions);
-  // }
-
   return jsonResp;
 }
 
@@ -214,11 +197,9 @@ export async function getForms() {
       throw new Error("Failed to fetch users");
     }
 
-    console.log("Response:", jsonResp);
-
     return { success: true, forms: jsonResp, message: "Success" };
   } catch (err: any) {
-    console.error(err);
+    console.error("Error fetching forms:", err);
     return { success: false, forms: null, message: err.message };
   }
 }

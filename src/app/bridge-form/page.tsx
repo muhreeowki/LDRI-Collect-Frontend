@@ -1,50 +1,49 @@
-'use client';
+"use client";
 
-import MultiStepForm from '@/components/multi-step-form';
-import React, { useState } from 'react';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import MultiStepForm from "@/components/multi-step-form";
+import React, { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { verifyDelegate } from '@/actions/delegate-actions';
-import { toast } from 'sonner';
+} from "@/components/ui/card";
+import { verifyDelegate } from "@/actions/delegate-actions";
+import { toast } from "sonner";
 
 const codeSchema = z.object({
-  formSubmissionCode: z.string().min(6, 'Code must be at least 6 characters'),
+  formSubmissionCode: z.string().min(6, "Code must be at least 6 characters"),
 });
 
 const BridgeFormPage = () => {
   const [accessGranted, setAccessGranted] = useState(false);
   const form = useForm({
     resolver: zodResolver(codeSchema),
-    defaultValues: { formSubmissionCode: '' },
+    defaultValues: { formSubmissionCode: "" },
   });
 
   const onSubmit = async (data: FormData) => {
     // Replace with your code verification logic
     const resp = await verifyDelegate(data);
-    console.log('Response:', resp);
     if (resp.success) {
-      toast.success('Access granted! You can now submit the form.');
+      toast.success("Access granted! You can now submit the form.");
       setAccessGranted(true);
     } else {
-      form.setError('formSubmissionCode', {
-        message: resp.error || 'Invalid code',
+      form.setError("formSubmissionCode", {
+        message: resp.error || "Invalid code",
       });
     }
   };
@@ -85,7 +84,7 @@ const BridgeFormPage = () => {
   }
 
   return (
-    <MultiStepForm formSubmissionCode={form.getValues('formSubmissionCode')} />
+    <MultiStepForm formSubmissionCode={form.getValues("formSubmissionCode")} />
   );
 };
 
