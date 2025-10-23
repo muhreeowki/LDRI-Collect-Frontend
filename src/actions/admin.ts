@@ -65,10 +65,28 @@ export async function getAdminStats() {
 }
 
 export async function rejectUser(userId: number) {
-  // This would call your backend to reject/delete the user
-  console.log("[v0] Rejecting user:", userId);
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return { success: true, message: "User rejected successfully" };
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  const isAdmin = cookieStore.get("isAdmin")?.value === "true";
+  if (!accessToken || !isAdmin) {
+    return { success: false, error: "Not Authorized" };
+  }
+  const response = await fetch(`${process.env.API_URL}/users/${userId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  const jsonResp = await response.json();
+  if (!response.ok) {
+    return {
+      success: false,
+      profile: null,
+      message: "Failed to fetch dashboard data",
+    };
+  }
+  return { success: true, profile: jsonResp, message: "Success" };
 }
 
 export async function getUsers() {
